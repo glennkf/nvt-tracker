@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NVT Role Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #004165;
+    --maroon: #800000;
+    --dark-navy: #012838;
+    --light-gray: #F5F5F5;
+    --mid-gray: #e0e0e0;
+    --text-primary: #1a1a1a;
+    --text-secondary: #555;
+    --text-muted: #888;
+    --green: #2e7d32;
+    --green-light: #e8f5e9;
+    --amber: #e65100;
+    --amber-light: #fff3e0;
+    --red: #c62828;
+    --red-light: #ffebee;
+    --border: #e0e0e0;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--light-gray);
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .header-left h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .header-left p {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .tm-badge {
+    background: var(--maroon);
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.03em;
+  }
+  nav {
+    background: var(--dark-navy);
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    padding: 0 2rem;
+  }
+  nav button {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.75rem 1.25rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+  }
+  nav button:hover { color: white; }
+  nav button.active {
+    color: white;
+    border-bottom-color: #f5a623;
+  }
+  main { padding: 1.5rem 2rem; max-width: 1400px; margin: 0 auto; }
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border);
+  }
+  .stat-card .label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  .stat-card .value {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1;
+  }
+  .stat-card .sub {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .card {
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .card-header h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .search-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  input[type="text"], select {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--light-gray);
+    color: var(--text-primary);
+    outline: none;
+  }
+  input[type="text"]:focus, select:focus {
+    border-color: var(--navy);
+    background: white;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+  th {
+    background: var(--light-gray);
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  th:hover { color: var(--navy); }
+  th.sorted { color: var(--navy); }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafafa; }
+  .member-name {
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  .count-badge {
+    display: inline-block;
+    background: var(--navy);
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    min-width: 28px;
+    text-align: center;
+  }
+  .count-badge.zero {
+    background: var(--mid-gray);
+    color: var(--text-muted);
+  }
+  .count-badge.high {
+    background: var(--maroon);
+  }
+  .role-pill {
+    display: inline-block;
+    background: #e8eef4;
+    color: var(--navy);
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin: 1px;
+    white-space: nowrap;
+  }
+  .check { color: var(--green); font-size: 1rem; }
+  .cross { color: var(--mid-gray); font-size: 1rem; }
+  .partial { color: var(--amber); font-size: 0.75rem; font-weight: 500; }
+  .level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+  .level-badge.complete { background: var(--green-light); color: var(--green); }
+  .level-badge.partial-lvl { background: var(--amber-light); color: var(--amber); }
+  .level-badge.none { background: var(--light-gray); color: var(--text-muted); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .member-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+  @media (max-width: 700px) {
+    .member-detail-grid { grid-template-columns: 1fr; }
+    main { padding: 1rem; }
+    header { padding: 1rem; }
+    nav { padding: 0 1rem; }
+  }
+  .level-checklist {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+  .level-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .level-card-header {
+    background: var(--navy);
+    color: white;
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .level-card-header.complete-header { background: var(--green); }
+  .level-card-body { padding: 10px 14px; }
+  .req-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid #f5f5f5;
+  }
+  .req-row:last-child { border-bottom: none; }
+  .req-icon { flex-shrink: 0; margin-top: 1px; }
+  .req-done { color: var(--green); font-weight: 500; }
+  .req-count { font-size: 0.7rem; color: var(--text-muted); margin-left: auto; }
+  .attendance-bar {
+    height: 6px;
+    background: var(--mid-gray);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .attendance-bar-fill {
+    height: 100%;
+    background: var(--navy);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .sort-arrow { font-size: 0.65rem; margin-left: 3px; }
+  .filter-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    background: #fafafa;
+  }
+  .btn-ghost {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: white;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.1s;
+  }
+  .btn-ghost:hover { border-color: var(--navy); color: var(--navy); }
+  .btn-ghost.active-filter { background: var(--navy); color: white; border-color: var(--navy); }
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .meetings-list { }
+  .meeting-row {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .meeting-row:last-child { border-bottom: none; }
+  .meeting-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .meeting-roles-list { display: flex; flex-wrap: wrap; gap: 4px; }
+  .back-btn {
+    background: none;
+    border: none;
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+  .back-btn:hover { text-decoration: underline; }
+  .member-hero {
+    background: var(--navy);
+    color: white;
+    padding: 1.5rem 1.5rem 1rem;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+  .member-hero h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+  .member-hero-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+  .hero-stat-label { font-size: 0.72rem; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-stat-value { font-size: 1.5rem; font-weight: 600; line-height: 1; }
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.75rem;
+  }
+  .legend { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.75rem; color: var(--text-muted); }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  #loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .error-banner {
+    background: var(--red-light);
+    border: 1px solid #ef9a9a;
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    color: var(--red);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Network Voice Toastmasters</h1>
+    <p id="header-sub">Role Tracker</p>
+  </div>
+  <div class="header-right">
+    <span class="tm-badge">District 31</span>
+    <span id="year-badge" class="tm-badge" style="background: rgba(255,255,255,0.15)"></span>
+  </div>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('overview')">Overview</button>
+  <button onclick="showTab('members')">Members</button>
+  <button onclick="showTab('levels')">Pathways Levels</button>
+  <button onclick="showTab('meetings')">Meetings</button>
+</nav>
+
+<main>
+  <div id="loading">Loading tracker data…</div>
+  <div id="error-area"></div>
+  <div id="app" style="display:none">
+
+    <!-- OVERVIEW TAB -->
+    <div id="tab-overview" class="tab-content active">
+      <div class="stats-row" id="overview-stats"></div>
+      <div class="card">
+        <div class="card-header">
+          <h2>All members — role summary</h2>
+          <div class="search-row">
+            <input type="text" id="overview-search" placeholder="Search member…" oninput="renderOverviewTable()" style="width:160px">
+            <select id="overview-sort" onchange="renderOverviewTable()">
+              <option value="name">Sort: Name</option>
+              <option value="total-desc">Sort: Most roles</option>
+              <option value="total-asc">Sort: Fewest roles</option>
+              <option value="distinct-desc">Sort: Most distinct</option>
+              <option value="attend-desc">Sort: Attendance</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table id="overview-table">
+            <thead id="overview-thead"></thead>
+            <tbody id="overview-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEMBERS TAB -->
+    <div id="tab-members" class="tab-content">
+      <div id="member-list-view">
+        <div class="card">
+          <div class="card-header">
+            <h2>Member profiles</h2>
+            <input type="text" id="member-search" placeholder="Search…" oninput="renderMemberList()" style="width:160px">
+          </div>
+          <div class="filter-row" id="member-filters"></div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Member</th>
+                  <th>Total roles</th>
+                  <th>Distinct roles</th>
+                  <th>Meetings attended</th>
+                  <th>Participation rate</th>
+                  <th>Top role</th>
+                </tr>
+              </thead>
+              <tbody id="member-list-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div id="member-detail-view" style="display:none"></div>
+    </div>
+
+    <!-- LEVELS TAB -->
+    <div id="tab-levels" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <h2>Pathways level checklist</h2>
+          <div class="search-row">
+            <input type="text" id="levels-search" placeholder="Search member…" oninput="renderLevelsTable()" style="width:160px">
+            <select id="levels-filter" onchange="renderLevelsTable()">
+              <option value="all">All members</option>
+              <option value="incomplete">Has incomplete levels</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table id="levels-table">
+            <thead>
+              <tr>
+                <th>Member</th>
+                <th>Level 1</th>
+                <th>Level 2</th>
+                <th>Level 3</th>
+                <th>Level 4</th>
+                <th>Level 5</th>
+                <th>Completed levels</th>
+              </tr>
+            </thead>
+            <tbody id="levels-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div style="margin-top:1rem; padding: 0.75rem 1.25rem; background:white; border-radius:var(--radius-lg); border:1px solid var(--border); font-size:0.78rem; color:var(--text-secondary);">
+        <strong style="color:var(--text-primary)">Note:</strong> Some roles (Table Topics Speaker, Introductory Mentor, Club Mentor, Specialized Roles) may require manual entry in <code>data.json</code> if not captured in FTH agendas.
+      </div>
+    </div>
+
+    <!-- MEETINGS TAB -->
+    <div id="tab-meetings" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <h2>Meeting log</h2>
+          <span id="meetings-count" style="font-size:0.8rem;color:var(--text-muted)"></span>
+        </div>
+        <div id="meetings-list" class="meetings-list"></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+let DATA = null;
+let currentMember = null;
+let activeTab = 'overview';
+
+const DATA_URL = 'data/data.json';
+
+async function loadData() {
+  try {
+    const res = await fetch(DATA_URL + '?t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    DATA = await res.json();
+    init();
+  } catch(e) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error-area').innerHTML = `<div class="error-banner">
+      Could not load data.json. Make sure the file is in the <code>data/</code> folder next to this HTML file.<br>
+      <small>Error: ${e.message}</small>
+    </div>`;
+  }
+}
+
+function init() {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('year-badge').textContent = DATA.club.tmYear;
+  document.getElementById('header-sub').textContent = 'Role Tracker — ' + DATA.club.tmYear;
+  buildOverview();
+  buildMemberList();
+  buildLevels();
+  buildMeetings();
+}
+
+function showTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+  if (tab === 'members') showMemberList();
+}
+
+function normalizeRole(rawRole) {
+  if (!rawRole) return null;
+  const aliases = DATA.roleAliases || {};
+  for (const [key, val] of Object.entries(aliases)) {
+    if (key.toLowerCase() === rawRole.toLowerCase()) return val;
+  }
+  return rawRole;
+}
+
+function getMemberStats() {
+  const stats = {};
+  const activeMembers = DATA.members.filter(m => m.active);
+  activeMembers.forEach(m => {
+    stats[m.name] = {
+      name: m.name,
+      totalRoles: 0,
+      distinctRoles: new Set(),
+      roleCounts: {},
+      meetingsAttended: 0,
+      meetingsTotal: DATA.meetings.length,
+      meetingsRolesFilled: 0,
+      roleHistory: []
+    };
+  });
+
+  DATA.meetings.forEach(mtg => {
+    const attending = (mtg.attending || []).map(n => cleanName(n));
+    attending.forEach(n => {
+      const matched = matchMember(n);
+      if (matched && stats[matched]) {
+        stats[matched].meetingsAttended++;
+      }
+    });
+
+    (mtg.roles || []).forEach(r => {
+      const normalized = normalizeRole(r.role);
+      if (!normalized) return;
+      const matched = matchMember(cleanName(r.member));
+      if (!matched || !stats[matched]) return;
+      const s = stats[matched];
+      s.totalRoles++;
+      s.distinctRoles.add(normalized);
+      s.roleCounts[normalized] = (s.roleCounts[normalized] || 0) + 1;
+      s.roleHistory.push({ date: mtg.date, role: normalized, meeting: mtg.title });
+      if (!attending.includes(cleanName(r.member))) {
+        s.meetingsAttended++;
+      }
+      s.meetingsRolesFilled++;
+    });
+
+    DATA.members.forEach(m => {
+      if (m.manualRoles) {
+        m.manualRoles.forEach(mr => {
+          if (!stats[m.name]) return;
+          const s = stats[m.name];
+          s.totalRoles++;
+          s.distinctRoles.add(mr.role);
+          s.roleCounts[mr.role] = (s.roleCounts[mr.role] || 0) + 1;
+          s.roleHistory.push({ date: mr.date || '', role: mr.role, meeting: mr.meeting || 'Manual entry', manual: true });
+        });
+      }
+    });
+  });
+
+  Object.values(stats).forEach(s => {
+    s.distinctRolesCount = s.distinctRoles.size;
+    s.attendanceRate = s.meetingsTotal > 0 ? Math.round((s.meetingsAttended / s.meetingsTotal) * 100) : 0;
+    s.participationRate = s.meetingsAttended > 0 ? Math.round((s.meetingsRolesFilled / s.meetingsAttended) * 100) : 0;
+    s.topRole = Object.entries(s.roleCounts).sort((a,b) => b[1]-a[1])[0]?.[0] || '—';
+  });
+
+  return stats;
+}
+
+function cleanName(raw) {
+  if (!raw || raw === '-' || raw === '') return '';
+  return raw
+    .replace(/,\s*(DTM|ACB|ACS|ACG|ALB|ALS|CC|CL|CTM|LGET|TM|DTM|Pathways\s+\w+\d*|MS\d+|VC\d+|LD\d+|SR\d+|Pathways\s+Mentor)[^,]*/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function matchMember(name) {
+  if (!name) return null;
+  const lower = name.toLowerCase();
+  for (const m of DATA.members) {
+    if (m.name.toLowerCase() === lower) return m.name;
+    const parts = m.name.toLowerCase().split(' ');
+    const nameParts = lower.split(' ');
+    if (parts[parts.length-1] === nameParts[nameParts.length-1] &&
+        parts[0][0] === nameParts[0]?.[0]) return m.name;
+    if (m.name.toLowerCase().includes(lower) || lower.includes(m.name.toLowerCase())) return m.name;
+  }
+  return null;
+}
+
+function getLevelStatus(memberName, stats) {
+  const s = stats[memberName];
+  if (!s) return {};
+  const rc = s.roleCounts;
+  const results = {};
+
+  const get = (role) => rc[role] || 0;
+  const has = (role) => get(role) > 0;
+  const hasAny = (roles) => roles.some(r => has(r));
+
+  results[1] = {
+    reqs: [
+      { label: 'Table Topics Speaker', done: has('Table Topics Speaker'), count: get('Table Topics Speaker') },
+      { label: 'Evaluator', done: has('Evaluator'), count: get('Evaluator') },
+      { label: 'Timer OR Grammarian', done: has('Timer') || has('Grammarian'), count: get('Timer') + get('Grammarian') }
+    ]
+  };
+  results[1].complete = results[1].reqs.every(r => r.done);
+
+  results[2] = {
+    reqs: [
+      { label: 'Grammarian', done: has('Grammarian'), count: get('Grammarian') },
+      { label: 'Table Topics Master', done: has('Table Topics Master'), count: get('Table Topics Master') },
+      { label: 'Evaluator', done: has('Evaluator'), count: get('Evaluator') },
+      { label: 'Toastmaster, Timer, OR Grammarian', done: has('Toastmaster') || has('Timer') || has('Grammarian'), count: get('Toastmaster') + get('Timer') + get('Grammarian') }
+    ]
+  };
+  results[2].complete = results[2].reqs.every(r => r.done);
+
+  results[3] = {
+    reqs: [
+      { label: 'Toastmaster', done: has('Toastmaster'), count: get('Toastmaster') },
+      { label: 'Evaluator', done: has('Evaluator'), count: get('Evaluator') },
+      { label: 'Table Topics Master, Speaker, OR Introductory Mentor', done: has('Table Topics Master') || has('Table Topics Speaker') || has('Introductory Mentor'), count: get('Table Topics Master') + get('Table Topics Speaker') + get('Introductory Mentor') }
+    ]
+  };
+  results[3].complete = results[3].reqs.every(r => r.done);
+
+  results[4] = {
+    reqs: [
+      { label: 'Toastmaster', done: has('Toastmaster'), count: get('Toastmaster') },
+      { label: 'General Evaluator', done: has('General Evaluator'), count: get('General Evaluator') },
+      { label: 'Evaluator', done: has('Evaluator'), count: get('Evaluator') },
+      { label: 'Elective (TT Speaker/Master/Specialized/repeat)', done: hasAny(['Table Topics Speaker','Table Topics Master','Specialized Role']) || get('Toastmaster')>1 || get('General Evaluator')>1 || get('Evaluator')>1, count: 0 }
+    ]
+  };
+  results[4].complete = results[4].reqs.every(r => r.done);
+
+  const ge = get('General Evaluator');
+  const tm = get('Toastmaster');
+  const ev = get('Evaluator');
+  results[5] = {
+    reqs: [
+      { label: 'General Evaluator (×2)', done: ge >= 2, count: ge },
+      { label: 'Toastmaster (×2)', done: tm >= 2, count: tm },
+      { label: 'Evaluator (×2)', done: ev >= 2, count: ev },
+      { label: 'Elective', done: hasAny(['Table Topics Speaker','Table Topics Master','Grammarian','Timer','Club Mentor','Specialized Role']) || ge>2 || tm>2 || ev>2, count: 0 }
+    ]
+  };
+  results[5].complete = results[5].reqs.every(r => r.done);
+
+  return results;
+}
+
+let overviewStats = null;
+
+function buildOverview() {
+  overviewStats = getMemberStats();
+  const members = DATA.members.filter(m => m.active);
+  const totalMeetings = DATA.meetings.length;
+  const totalRoles = Object.values(overviewStats).reduce((a,s) => a + s.totalRoles, 0);
+  const avgRoles = members.length > 0 ? Math.round(totalRoles / members.length) : 0;
+  const maxRoles = Math.max(...Object.values(overviewStats).map(s => s.totalRoles));
+
+  document.getElementById('overview-stats').innerHTML = `
+    <div class="stat-card"><div class="label">Members</div><div class="value">${members.length}</div></div>
+    <div class="stat-card"><div class="label">Meetings logged</div><div class="value">${totalMeetings}</div></div>
+    <div class="stat-card"><div class="label">Total role fills</div><div class="value">${totalRoles}</div></div>
+    <div class="stat-card"><div class="label">Avg roles / member</div><div class="value">${avgRoles}</div></div>
+    <div class="stat-card"><div class="label">Most active</div><div class="value" style="font-size:1.1rem">${maxRoles}</div><div class="sub">role fills</div></div>
+  `;
+
+  const allRoles = new Set();
+  DATA.meetings.forEach(m => (m.roles||[]).forEach(r => {
+    const n = normalizeRole(r.role);
+    if (n) allRoles.add(n);
+  }));
+  const roleList = [...allRoles].sort();
+
+  const thead = document.getElementById('overview-thead');
+  thead.innerHTML = `<tr>
+    <th onclick="sortOverview('name')">Member <span class="sort-arrow">↕</span></th>
+    <th onclick="sortOverview('total-desc')">Total <span class="sort-arrow">↕</span></th>
+    <th onclick="sortOverview('distinct-desc')">Distinct <span class="sort-arrow">↕</span></th>
+    <th onclick="sortOverview('attend-desc')">Attended <span class="sort-arrow">↕</span></th>
+    ${roleList.map(r => `<th style="font-size:0.65rem;max-width:60px;white-space:normal;text-align:center">${r}</th>`).join('')}
+  </tr>`;
+
+  renderOverviewTable();
+}
+
+let overviewSortMode = 'name';
+function sortOverview(mode) { overviewSortMode = mode; renderOverviewTable(); }
+
+function renderOverviewTable() {
+  if (!overviewStats) return;
+  const search = document.getElementById('overview-search').value.toLowerCase();
+  const sort = document.getElementById('overview-sort').value || overviewSortMode;
+
+  const allRoles = new Set();
+  DATA.meetings.forEach(m => (m.roles||[]).forEach(r => {
+    const n = normalizeRole(r.role);
+    if (n) allRoles.add(n);
+  }));
+  const roleList = [...allRoles].sort();
+
+  let members = Object.values(overviewStats).filter(s => !search || s.name.toLowerCase().includes(search));
+
+  if (sort === 'name') members.sort((a,b) => a.name.localeCompare(b.name));
+  else if (sort === 'total-desc') members.sort((a,b) => b.totalRoles - a.totalRoles);
+  else if (sort === 'total-asc') members.sort((a,b) => a.totalRoles - b.totalRoles);
+  else if (sort === 'distinct-desc') members.sort((a,b) => b.distinctRolesCount - a.distinctRolesCount);
+  else if (sort === 'attend-desc') members.sort((a,b) => b.meetingsAttended - a.meetingsAttended);
+
+  const tbody = document.getElementById('overview-tbody');
+  if (members.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="100" class="empty-state">No members found</td></tr>`;
+    return;
+  }
+  const maxTotal = Math.max(...members.map(s => s.totalRoles), 1);
+
+  tbody.innerHTML = members.map(s => `
+    <tr style="cursor:pointer" onclick="showMemberDetail('${s.name.replace(/'/g,"\\'")}')">
+      <td class="member-name">${s.name}</td>
+      <td><span class="count-badge ${s.totalRoles === 0 ? 'zero' : s.totalRoles >= maxTotal * 0.7 ? 'high' : ''}">${s.totalRoles}</span></td>
+      <td><span class="count-badge ${s.distinctRolesCount === 0 ? 'zero' : ''}">${s.distinctRolesCount}</span></td>
+      <td>
+        <span style="font-size:0.78rem">${s.meetingsAttended}/${s.meetingsTotal}</span>
+        <div class="attendance-bar"><div class="attendance-bar-fill" style="width:${s.attendanceRate}%"></div></div>
+      </td>
+      ${roleList.map(r => {
+        const c = s.roleCounts[r] || 0;
+        return `<td style="text-align:center">${c > 0 ? `<span class="count-badge" style="font-size:0.68rem;min-width:22px;padding:1px 6px">${c}</span>` : '<span style="color:#ddd">—</span>'}</td>`;
+      }).join('')}
+    </tr>
+  `).join('');
+}
+
+function buildMemberList() { renderMemberList(); }
+function showMemberList() {
+  document.getElementById('member-list-view').style.display = '';
+  document.getElementById('member-detail-view').style.display = 'none';
+}
+
+function renderMemberList() {
+  if (!overviewStats) overviewStats = getMemberStats();
+  const search = document.getElementById('member-search')?.value.toLowerCase() || '';
+  let members = Object.values(overviewStats).filter(s => !search || s.name.toLowerCase().includes(search));
+  members.sort((a,b) => a.name.localeCompare(b.name));
+
+  const tbody = document.getElementById('member-list-tbody');
+  tbody.innerHTML = members.map(s => `
+    <tr style="cursor:pointer" onclick="showMemberDetail('${s.name.replace(/'/g,"\\'")}')">
+      <td class="member-name" style="color:var(--navy)">${s.name}</td>
+      <td><span class="count-badge ${s.totalRoles === 0 ? 'zero' : ''}">${s.totalRoles}</span></td>
+      <td><span class="count-badge ${s.distinctRolesCount === 0 ? 'zero' : ''}">${s.distinctRolesCount}</span></td>
+      <td>${s.meetingsAttended} / ${s.meetingsTotal}</td>
+      <td>
+        <span style="font-size:0.78rem">${s.attendanceRate}%</span>
+        <div class="attendance-bar"><div class="attendance-bar-fill" style="width:${s.attendanceRate}%"></div></div>
+      </td>
+      <td><span class="role-pill">${s.topRole}</span></td>
+    </tr>
+  `).join('');
+}
+
+function showMemberDetail(name) {
+  if (!overviewStats) overviewStats = getMemberStats();
+  const s = overviewStats[name];
+  if (!s) return;
+
+  const lvls = getLevelStatus(name, overviewStats);
+  const completedLevels = Object.values(lvls).filter(l => l.complete).length;
+
+  const sortedRoles = Object.entries(s.roleCounts).sort((a,b) => b[1]-a[1]);
+  const history = [...s.roleHistory].sort((a,b) => b.date.localeCompare(a.date));
+
+  const levelCards = [1,2,3,4,5].map(lvl => {
+    const l = lvls[lvl];
+    const allDone = l.complete;
+    const someDone = l.reqs.some(r => r.done);
+    return `
+      <div class="level-card">
+        <div class="level-card-header ${allDone ? 'complete-header' : ''}">
+          <span>Level ${lvl}</span>
+          <span>${allDone ? '✓ Complete' : someDone ? 'In progress' : 'Not started'}</span>
+        </div>
+        <div class="level-card-body">
+          ${l.reqs.map(r => `
+            <div class="req-row">
+              <span class="req-icon">${r.done ? '✓' : '○'}</span>
+              <span class="${r.done ? 'req-done' : ''}">${r.label}</span>
+              ${r.count > 0 ? `<span class="req-count">${r.count}×</span>` : ''}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const detailHTML = `
+    <button class="back-btn" onclick="showMemberList()">← Back to members</button>
+    <div class="card" style="margin-bottom:1rem">
+      <div class="member-hero">
+        <h2>${s.name}</h2>
+        <div class="member-hero-stats">
+          <div><div class="hero-stat-label">Total roles</div><div class="hero-stat-value">${s.totalRoles}</div></div>
+          <div><div class="hero-stat-label">Distinct roles</div><div class="hero-stat-value">${s.distinctRolesCount}</div></div>
+          <div><div class="hero-stat-label">Meetings attended</div><div class="hero-stat-value">${s.meetingsAttended}</div></div>
+          <div><div class="hero-stat-label">Levels complete</div><div class="hero-stat-value">${completedLevels} / 5</div></div>
+        </div>
+      </div>
+      <div style="padding:1.25rem">
+        <div class="section-label">Role breakdown</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.5rem">
+          ${sortedRoles.length === 0 ? '<span style="color:var(--text-muted);font-size:0.82rem">No roles recorded yet</span>' :
+            sortedRoles.map(([role, count]) => `
+              <span style="background:#e8eef4;color:var(--navy);font-size:0.78rem;padding:4px 10px;border-radius:20px;font-weight:500">
+                ${role} <strong style="color:var(--maroon)">${count}</strong>
+              </span>
+            `).join('')}
+        </div>
+        <div class="section-label">Pathways level progress</div>
+        <div class="level-checklist" style="padding:0;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.75rem;margin-bottom:1.5rem">
+          ${levelCards}
+        </div>
+        <div class="section-label">Role history</div>
+        ${history.length === 0 ? '<p style="font-size:0.82rem;color:var(--text-muted)">No history recorded</p>' : `
+          <table style="width:100%">
+            <thead><tr>
+              <th style="font-size:0.68rem">Date</th>
+              <th style="font-size:0.68rem">Meeting</th>
+              <th style="font-size:0.68rem">Role</th>
+            </tr></thead>
+            <tbody>
+              ${history.map(h => `
+                <tr>
+                  <td style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--text-muted)">${h.date || '—'}</td>
+                  <td style="font-size:0.78rem">${h.meeting}</td>
+                  <td><span class="role-pill">${h.role}${h.manual ? ' <span style="opacity:0.6;font-size:0.65rem">(manual)</span>' : ''}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `}
+      </div>
+    </div>
+  `;
+
+  if (activeTab !== 'members') {
+    showTab('members');
+    document.querySelectorAll('nav button').forEach((btn, i) => {
+      if (['overview','members','levels','meetings'][i] === 'members') btn.classList.add('active');
+      else btn.classList.remove('active');
+    });
+  }
+
+  document.getElementById('member-list-view').style.display = 'none';
+  const detail = document.getElementById('member-detail-view');
+  detail.style.display = 'block';
+  detail.innerHTML = detailHTML;
+}
+
+function buildLevels() { renderLevelsTable(); }
+
+function renderLevelsTable() {
+  if (!overviewStats) overviewStats = getMemberStats();
+  const search = document.getElementById('levels-search')?.value.toLowerCase() || '';
+  const filter = document.getElementById('levels-filter')?.value || 'all';
+
+  let members = Object.values(overviewStats).filter(s => !search || s.name.toLowerCase().includes(search));
+  members.sort((a,b) => a.name.localeCompare(b.name));
+
+  const tbody = document.getElementById('levels-tbody');
+  tbody.innerHTML = members.map(s => {
+    const lvls = getLevelStatus(s.name, overviewStats);
+    const completedCount = Object.values(lvls).filter(l => l.complete).length;
+    if (filter === 'incomplete' && completedCount === 5) return '';
+
+    const levelCells = [1,2,3,4,5].map(n => {
+      const l = lvls[n];
+      const doneCount = l.reqs.filter(r => r.done).length;
+      const total = l.reqs.length;
+      if (l.complete) return `<td><span class="level-badge complete">✓ Done</span></td>`;
+      if (doneCount > 0) return `<td><span class="level-badge partial-lvl">${doneCount}/${total}</span></td>`;
+      return `<td><span class="level-badge none">—</span></td>`;
+    }).join('');
+
+    return `
+      <tr style="cursor:pointer" onclick="showMemberDetail('${s.name.replace(/'/g,"\\'")}')">
+        <td class="member-name" style="color:var(--navy)">${s.name}</td>
+        ${levelCells}
+        <td><span class="count-badge ${completedCount === 0 ? 'zero' : completedCount === 5 ? 'high' : ''}">${completedCount} / 5</span></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function buildMeetings() {
+  const meetings = [...DATA.meetings].sort((a,b) => b.date.localeCompare(a.date));
+  document.getElementById('meetings-count').textContent = meetings.length + ' meeting' + (meetings.length !== 1 ? 's' : '');
+
+  document.getElementById('meetings-list').innerHTML = meetings.map(m => {
+    const filledRoles = (m.roles || []).filter(r => r.member && r.member !== '-' && r.member !== '');
+    const uniqueMembers = new Set(filledRoles.map(r => cleanName(r.member))).size;
+    return `
+      <div class="meeting-row">
+        <div>
+          <div style="font-weight:500;font-size:0.9rem;margin-bottom:4px">${m.title}</div>
+          <div class="meeting-date">${m.date}</div>
+          <div style="margin-top:6px;font-size:0.75rem;color:var(--text-muted)">
+            ${(m.attending||[]).length} attending · ${filledRoles.length} roles filled · ${uniqueMembers} participants
+          </div>
+        </div>
+        <div>
+          <div class="meeting-roles-list">
+            ${filledRoles.map(r => `
+              <span class="role-pill" title="${cleanName(r.member)}">${normalizeRole(r.role)}: ${cleanName(r.member).split(' ').pop()}</span>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+loadData();
+</script>
+</body>
+</html>

@@ -830,11 +830,11 @@ function buildOverview() {
 
   const thead = document.getElementById('overview-thead');
   thead.innerHTML = `<tr>
-    <th onclick="sortOverview('name')" style="width:140px;min-width:140px">Member <span class="sort-arrow">↕</span></th>
-    <th onclick="sortOverview('total-desc')" style="width:44px;min-width:44px">Total <span class="sort-arrow">↕</span></th>
-    <th onclick="sortOverview('distinct-desc')" style="width:50px;min-width:50px">Distinct <span class="sort-arrow">↕</span></th>
-    <th onclick="sortOverview('attend-desc')" style="width:80px;min-width:80px">Attended <span class="sort-arrow">↕</span></th>
-    ${roleList.map(r => `<th class="rotated"><span>${r}</span></th>`).join('')}<th style="min-width:16px;background:var(--light-gray);border-bottom:1px solid var(--border)"></th>
+    <th class="member-th" onclick="sortOverview('name')">Member <span class="sort-arrow">↕</span></th>
+    <th class="rot" onclick="sortOverview('total-desc')"><span>Total ↕</span></th>
+    <th class="rot" onclick="sortOverview('distinct-desc')"><span>Distinct ↕</span></th>
+    <th class="rot" onclick="sortOverview('attend-desc')"><span>Attended ↕</span></th>
+    ${roleList.map(r => `<th class="rotated"><span>${r}</span></th>`).join('')}<th style="width:16px;background:var(--light-gray);border-bottom:1px solid var(--border)"></th>
   </tr>`;
 
   renderOverviewTable();
@@ -898,7 +898,7 @@ function renderOverviewTable() {
         const c = s.roleCounts[r] || 0;
         return `<td class="role-col">${c > 0 ? `<span class="count-badge" style="font-size:0.68rem;min-width:22px;padding:1px 6px">${c}</span>` : '<span style="color:var(--text-muted);font-size:0.8rem">—</span>'}</td>`;
       }).join('')}
-      <td style="min-width:16px;border:none"></td>
+      <td style="width:16px"></td>
     </tr>
   `).join('');
 }

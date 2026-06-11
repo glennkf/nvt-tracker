@@ -174,32 +174,49 @@
   }
   th {
     background: var(--light-gray);
-    padding: 8px 12px;
-    position: sticky;
-    top: 0;
-    text-align: left;
-    font-size: 0.72rem;
+    padding: 6px 2px;
+    text-align: center;
+    vertical-align: bottom;
+    font-size: 0.68rem;
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     border-bottom: 1px solid var(--border);
     white-space: nowrap;
-    cursor: pointer;
     user-select: none;
   }
-  th:hover { color: var(--navy); }
-  th.sorted { color: var(--navy); }
+  th.member-th {
+    text-align: left;
+    padding: 6px 8px;
+    width: 110px;
+    min-width: 110px;
+    cursor: pointer;
+  }
+  th.member-th:hover { color: var(--navy); }
+  th.rot {
+    width: 32px;
+    min-width: 32px;
+    max-width: 32px;
+    cursor: pointer;
+  }
+  th.rot span {
+    display: inline-block;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  th.rot:hover span { color: var(--navy); }
   th.rotated {
-    padding: 6px 4px;
-    text-align: center;
-    width: 36px;
-    min-width: 36px;
-    max-width: 36px;
-    background: var(--light-gray);
-    border-bottom: 1px solid var(--border);
+    width: 32px;
+    min-width: 32px;
+    max-width: 32px;
     cursor: default;
-    vertical-align: bottom;
   }
   th.rotated span {
     display: inline-block;
@@ -212,8 +229,8 @@
     letter-spacing: 0.04em;
     white-space: nowrap;
   }
-  th.rotated:hover span { color: var(--navy); }
-  td.role-col { text-align: center; padding: 7px 4px; width: 36px; }
+  td.role-col { text-align: center; padding: 7px 2px; width: 32px; }
+  td.att-col { text-align: left; padding: 7px 4px; }
   td {
     padding: 9px 12px;
     border-bottom: 1px solid #f0f0f0;
@@ -483,7 +500,7 @@
           </div>
         </div>
         <div style="overflow-x:auto">
-          <table id="overview-table" style="border-collapse:collapse;width:max-content;min-width:100%">
+          <table id="overview-table" style="border-collapse:collapse;width:max-content;min-width:100%;table-layout:fixed">
             <thead id="overview-thead"></thead>
             <tbody id="overview-tbody"></tbody>
           </table>
@@ -813,10 +830,10 @@ function buildOverview() {
 
   const thead = document.getElementById('overview-thead');
   thead.innerHTML = `<tr>
-    <th onclick="sortOverview('name')">Member <span class="sort-arrow">↕</span></th>
-    <th onclick="sortOverview('total-desc')">Total <span class="sort-arrow">↕</span></th>
-    <th onclick="sortOverview('distinct-desc')">Distinct <span class="sort-arrow">↕</span></th>
-    <th onclick="sortOverview('attend-desc')">Attended <span class="sort-arrow">↕</span></th>
+    <th onclick="sortOverview('name')" style="width:140px;min-width:140px">Member <span class="sort-arrow">↕</span></th>
+    <th onclick="sortOverview('total-desc')" style="width:44px;min-width:44px">Total <span class="sort-arrow">↕</span></th>
+    <th onclick="sortOverview('distinct-desc')" style="width:50px;min-width:50px">Distinct <span class="sort-arrow">↕</span></th>
+    <th onclick="sortOverview('attend-desc')" style="width:80px;min-width:80px">Attended <span class="sort-arrow">↕</span></th>
     ${roleList.map(r => `<th class="rotated"><span>${r}</span></th>`).join('')}<th style="min-width:16px;background:var(--light-gray);border-bottom:1px solid var(--border)"></th>
   </tr>`;
 
@@ -870,12 +887,12 @@ function renderOverviewTable() {
 
   tbody.innerHTML = members.map(s => `
     <tr style="cursor:pointer" onclick="showMemberDetail('${s.name.replace(/'/g,"\\'")}')">
-      <td class="member-name">${s.name}</td>
-      <td><span class="count-badge ${s.totalRoles === 0 ? 'zero' : s.totalRoles >= maxTotal * 0.7 ? 'high' : ''}">${s.totalRoles}</span></td>
-      <td><span class="count-badge ${s.distinctRolesCount === 0 ? 'zero' : ''}">${s.distinctRolesCount}</span></td>
-      <td>
-        <span style="font-size:0.78rem">${s.meetingsAttended}/${s.meetingsTotal}</span>
-        <div class="attendance-bar"><div class="attendance-bar-fill" style="width:${s.attendanceRate}%"></div></div>
+      <td class="member-name" style="width:110px;min-width:110px;max-width:110px;overflow:hidden;text-overflow:ellipsis;text-align:left;padding:7px 8px">${s.name}</td>
+      <td style="text-align:center;width:32px"><span class="count-badge ${s.totalRoles === 0 ? 'zero' : s.totalRoles >= maxTotal * 0.7 ? 'high' : ''}">${s.totalRoles}</span></td>
+      <td style="text-align:center;width:32px"><span class="count-badge ${s.distinctRolesCount === 0 ? 'zero' : ''}">${s.distinctRolesCount}</span></td>
+      <td class="att-col" style="width:36px">
+        <span style="font-size:0.72rem">${s.meetingsAttended}/${s.meetingsTotal}</span>
+        <div class="attendance-bar" style="width:28px"><div class="attendance-bar-fill" style="width:${s.attendanceRate}%"></div></div>
       </td>
       ${roleList.map(r => {
         const c = s.roleCounts[r] || 0;

@@ -24,7 +24,14 @@
     "Timer Report": null,
     "Voting Results": null,
     "Best Speaker/Evaluator": null,
-    "Break": null
+    "Break": null,
+    "presidents welcome": null,
+    "presidents closing remarks": null,
+    "president's welcome": null,
+    "president's closing remarks": null,
+    "secretary/role call": null,
+    "secretary": null,
+    "sergeant at arms": null
   },
   "levelRequirements": {
     "1": {
@@ -255,10 +262,6 @@
       ],
       "roles": [
         {
-          "role": "Sergeant at Arms",
-          "member": "Mark R. Rinker"
-        },
-        {
           "role": "Thought of the day",
           "member": "Mark R. Rinker"
         },
@@ -297,10 +300,6 @@
         {
           "role": "Evaluator",
           "member": "Angela Nuss"
-        },
-        {
-          "role": "Secretary",
-          "member": "Maureen DeRoma"
         },
         {
           "role": "Table Topics Master",

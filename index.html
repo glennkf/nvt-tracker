@@ -500,7 +500,7 @@
           </div>
         </div>
         <div style="overflow-x:auto">
-          <table id="overview-table" style="border-collapse:collapse;width:100%">
+          <table id="overview-table" style="border-collapse:collapse;width:100%;table-layout:fixed">
             <thead id="overview-thead"></thead>
             <tbody id="overview-tbody"></tbody>
           </table>
@@ -830,7 +830,7 @@ function buildOverview() {
 
   const thead = document.getElementById('overview-thead');
   thead.innerHTML = `<tr>
-    <th onclick="sortOverview('name')" style="min-width:120px;text-align:left;padding:6px 8px;vertical-align:bottom;white-space:nowrap">Member <span class="sort-arrow">↕</span></th>
+    <th onclick="sortOverview('name')" style="width:22%;text-align:left;padding:6px 8px;vertical-align:bottom;white-space:nowrap">Member <span class="sort-arrow">↕</span></th>
     <th onclick="sortOverview('total-desc')" style="width:32px;min-width:32px;max-width:32px;padding:6px 2px;vertical-align:bottom"><span style="display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);font-size:0.68rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap">Total ↕</span></th>
     <th onclick="sortOverview('distinct-desc')" style="width:32px;min-width:32px;max-width:32px;padding:6px 2px;vertical-align:bottom"><span style="display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);font-size:0.68rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap">Distinct ↕</span></th>
     <th onclick="sortOverview('attend-desc')" style="width:60px;min-width:60px;max-width:60px;padding:6px 4px;vertical-align:bottom;text-align:left"><span style="display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);font-size:0.68rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap">Attended ↕</span></th>

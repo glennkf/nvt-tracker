@@ -191,33 +191,29 @@
   th:hover { color: var(--navy); }
   th.sorted { color: var(--navy); }
   th.rotated {
-    white-space: nowrap;
-    padding: 0;
-    vertical-align: bottom;
-    height: 100px;
+    padding: 6px 4px;
+    text-align: center;
     width: 36px;
     min-width: 36px;
     max-width: 36px;
-    position: relative;
     background: var(--light-gray);
     border-bottom: 1px solid var(--border);
     cursor: default;
+    vertical-align: bottom;
   }
-  th.rotated div {
-    transform: rotate(-45deg);
-    transform-origin: bottom left;
-    white-space: nowrap;
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    font-size: 0.72rem;
+  th.rotated span {
+    display: inline-block;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 0.68rem;
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    width: 110px;
+    white-space: nowrap;
   }
-  th.rotated:hover div { color: var(--navy); }
+  th.rotated:hover span { color: var(--navy); }
+  td.role-col { text-align: center; padding: 7px 4px; width: 36px; }
   td {
     padding: 9px 12px;
     border-bottom: 1px solid #f0f0f0;
@@ -793,12 +789,27 @@ function buildOverview() {
     <div class="stat-card"><div class="label">Most active</div><div class="value" style="font-size:1.1rem">${maxRoles}</div><div class="sub">role fills</div></div>
   `;
 
+  const ROLE_ORDER = [
+    "Thought of the day",
+    "Toastmaster",
+    "Joke of the day",
+    "Timer",
+    "Grammarian",
+    "Speaker",
+    "General Evaluator",
+    "Evaluator",
+    "Table Topics Master"
+  ];
   const allRoles = new Set();
   DATA.meetings.forEach(m => (m.roles||[]).forEach(r => {
     const n = normalizeRole(r.role);
     if (n) allRoles.add(n);
   }));
-  const roleList = [...allRoles].sort();
+  // Use fixed order, then append any unexpected roles at the end
+  const roleList = [
+    ...ROLE_ORDER.filter(r => allRoles.has(r)),
+    ...[...allRoles].filter(r => !ROLE_ORDER.includes(r)).sort()
+  ];
 
   const thead = document.getElementById('overview-thead');
   thead.innerHTML = `<tr>
@@ -806,7 +817,7 @@ function buildOverview() {
     <th onclick="sortOverview('total-desc')">Total <span class="sort-arrow">↕</span></th>
     <th onclick="sortOverview('distinct-desc')">Distinct <span class="sort-arrow">↕</span></th>
     <th onclick="sortOverview('attend-desc')">Attended <span class="sort-arrow">↕</span></th>
-    ${roleList.map(r => `<th class="rotated"><div>${r}</div></th>`).join('')}<th class="rotated"><div></div></th>
+    ${roleList.map(r => `<th class="rotated"><span>${r}</span></th>`).join('')}<th style="min-width:16px;background:var(--light-gray);border-bottom:1px solid var(--border)"></th>
   </tr>`;
 
   renderOverviewTable();
@@ -820,12 +831,27 @@ function renderOverviewTable() {
   const search = document.getElementById('overview-search').value.toLowerCase();
   const sort = document.getElementById('overview-sort').value || overviewSortMode;
 
+  const ROLE_ORDER = [
+    "Thought of the day",
+    "Toastmaster",
+    "Joke of the day",
+    "Timer",
+    "Grammarian",
+    "Speaker",
+    "General Evaluator",
+    "Evaluator",
+    "Table Topics Master"
+  ];
   const allRoles = new Set();
   DATA.meetings.forEach(m => (m.roles||[]).forEach(r => {
     const n = normalizeRole(r.role);
     if (n) allRoles.add(n);
   }));
-  const roleList = [...allRoles].sort();
+  // Use fixed order, then append any unexpected roles at the end
+  const roleList = [
+    ...ROLE_ORDER.filter(r => allRoles.has(r)),
+    ...[...allRoles].filter(r => !ROLE_ORDER.includes(r)).sort()
+  ];
 
   let members = Object.values(overviewStats).filter(s => !search || s.name.toLowerCase().includes(search));
 
@@ -853,9 +879,9 @@ function renderOverviewTable() {
       </td>
       ${roleList.map(r => {
         const c = s.roleCounts[r] || 0;
-        return `<td style="text-align:center">${c > 0 ? `<span class="count-badge" style="font-size:0.68rem;min-width:22px;padding:1px 6px">${c}</span>` : '<span style="color:#ddd">—</span>'}</td>`;
+        return `<td class="role-col">${c > 0 ? `<span class="count-badge" style="font-size:0.68rem;min-width:22px;padding:1px 6px">${c}</span>` : '<span style="color:var(--text-muted);font-size:0.8rem">—</span>'}</td>`;
       }).join('')}
-      <td style="min-width:48px;padding-right:24px;border:none"></td>
+      <td style="min-width:16px;border:none"></td>
     </tr>
   `).join('');
 }

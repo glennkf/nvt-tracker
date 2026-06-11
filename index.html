@@ -456,7 +456,7 @@
             </select>
           </div>
         </div>
-        <div style="overflow-x:auto">
+        <div style="overflow-x:auto;padding-right:24px">
           <table id="overview-table">
             <thead id="overview-thead"></thead>
             <tbody id="overview-tbody"></tbody>
@@ -776,7 +776,7 @@ function buildOverview() {
     <th onclick="sortOverview('total-desc')">Total <span class="sort-arrow">↕</span></th>
     <th onclick="sortOverview('distinct-desc')">Distinct <span class="sort-arrow">↕</span></th>
     <th onclick="sortOverview('attend-desc')">Attended <span class="sort-arrow">↕</span></th>
-    ${roleList.map(r => `<th style="font-size:0.65rem;max-width:55px;white-space:normal;text-align:center;line-height:1.2;padding:6px 4px">${r}</th>`).join('')}
+    ${roleList.map(r => `<th style="font-size:0.65rem;max-width:55px;white-space:normal;text-align:center;line-height:1.2;padding:6px 4px">${r}</th>`).join('')}<th style="min-width:24px;border:none;background:transparent"></th>
   </tr>`;
 
   renderOverviewTable();
@@ -825,6 +825,7 @@ function renderOverviewTable() {
         const c = s.roleCounts[r] || 0;
         return `<td style="text-align:center">${c > 0 ? `<span class="count-badge" style="font-size:0.68rem;min-width:22px;padding:1px 6px">${c}</span>` : '<span style="color:#ddd">—</span>'}</td>`;
       }).join('')}
+      <td style="min-width:24px;border:none"></td>
     </tr>
   `).join('');
 }

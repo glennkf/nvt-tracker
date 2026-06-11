@@ -835,7 +835,6 @@ function buildOverview() {
     <th onclick="sortOverview('distinct-desc')" style="width:32px;min-width:32px;max-width:32px;padding:6px 2px;vertical-align:bottom"><span style="display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);font-size:0.68rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap">Distinct ↕</span></th>
     <th onclick="sortOverview('attend-desc')" style="width:60px;min-width:60px;max-width:60px;padding:6px 4px;vertical-align:bottom;text-align:left"><span style="display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);font-size:0.68rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap">Attended ↕</span></th>
     ${roleList.map(r => `<th style="width:32px;min-width:32px;max-width:32px;padding:6px 2px;vertical-align:bottom;text-align:center"><span style="display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);font-size:0.68rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap">${r}</span></th>`).join('')}
-    <th style="width:16px;min-width:16px;background:var(--light-gray);border-bottom:1px solid var(--border)"></th>
   </tr>`;
 
   renderOverviewTable();
@@ -899,7 +898,6 @@ function renderOverviewTable() {
         const c = s.roleCounts[r] || 0;
         return `<td style="width:32px;text-align:center;padding:9px 2px">${c > 0 ? `<span class="count-badge" style="font-size:0.68rem;min-width:20px;padding:1px 4px">${c}</span>` : '<span style="color:var(--text-muted)">—</span>'}</td>`;
       }).join('')}
-      <td style="width:16px"></td>
     </tr>
   `).join('');
 }

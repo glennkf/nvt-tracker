@@ -190,6 +190,34 @@
   }
   th:hover { color: var(--navy); }
   th.sorted { color: var(--navy); }
+  th.rotated {
+    white-space: nowrap;
+    padding: 0;
+    vertical-align: bottom;
+    height: 100px;
+    width: 36px;
+    min-width: 36px;
+    max-width: 36px;
+    position: relative;
+    background: var(--light-gray);
+    border-bottom: 1px solid var(--border);
+    cursor: default;
+  }
+  th.rotated div {
+    transform: rotate(-45deg);
+    transform-origin: bottom left;
+    white-space: nowrap;
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    width: 110px;
+  }
+  th.rotated:hover div { color: var(--navy); }
   td {
     padding: 9px 12px;
     border-bottom: 1px solid #f0f0f0;
@@ -778,7 +806,7 @@ function buildOverview() {
     <th onclick="sortOverview('total-desc')">Total <span class="sort-arrow">↕</span></th>
     <th onclick="sortOverview('distinct-desc')">Distinct <span class="sort-arrow">↕</span></th>
     <th onclick="sortOverview('attend-desc')">Attended <span class="sort-arrow">↕</span></th>
-    ${roleList.map(r => `<th style="font-size:0.65rem;max-width:55px;white-space:normal;text-align:center;line-height:1.2;padding:6px 4px">${r}</th>`).join('')}<th style="min-width:48px;padding-right:24px"></th>
+    ${roleList.map(r => `<th class="rotated"><div>${r}</div></th>`).join('')}<th class="rotated"><div></div></th>
   </tr>`;
 
   renderOverviewTable();

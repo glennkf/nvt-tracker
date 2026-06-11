@@ -189,8 +189,8 @@
   th.member-th {
     text-align: left;
     padding: 6px 8px;
-    width: 110px;
     min-width: 110px;
+    width: auto;
     cursor: pointer;
   }
   th.member-th:hover { color: var(--navy); }
@@ -500,7 +500,7 @@
           </div>
         </div>
         <div style="overflow-x:auto">
-          <table id="overview-table" style="border-collapse:collapse;width:max-content;min-width:100%;table-layout:fixed">
+          <table id="overview-table" style="border-collapse:collapse;width:100%">
             <thead id="overview-thead"></thead>
             <tbody id="overview-tbody"></tbody>
           </table>
@@ -887,7 +887,7 @@ function renderOverviewTable() {
 
   tbody.innerHTML = members.map(s => `
     <tr style="cursor:pointer" onclick="showMemberDetail('${s.name.replace(/'/g,"\\'")}')">
-      <td class="member-name" style="width:110px;min-width:110px;max-width:110px;overflow:hidden;text-overflow:ellipsis;text-align:left;padding:7px 8px">${s.name}</td>
+      <td class="member-name" style="min-width:110px;text-align:left;padding:7px 8px">${s.name}</td>
       <td style="text-align:center;width:32px"><span class="count-badge ${s.totalRoles === 0 ? 'zero' : s.totalRoles >= maxTotal * 0.7 ? 'high' : ''}">${s.totalRoles}</span></td>
       <td style="text-align:center;width:32px"><span class="count-badge ${s.distinctRolesCount === 0 ? 'zero' : ''}">${s.distinctRolesCount}</span></td>
       <td class="att-col" style="width:36px">

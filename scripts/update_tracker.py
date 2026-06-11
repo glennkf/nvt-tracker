@@ -221,9 +221,9 @@ def preview_parsed(parsed, data):
     print(f"\n  Not attending: {', '.join(parsed['not_attending'])}")
 
     if unmatched:
-        print(f"\n  !! WARNING: {len(unmatched)} role(s) could not be matched to members:")
+        print(f"\n  ** NEW MEMBERS DETECTED ({len(unmatched)}) — will be auto-added:")
         for n in unmatched:
-            print(f"    - '{n}'  (check spelling or add to data.json members list)")
+            print(f"    + '{n}'")
 
     return unmatched
 
@@ -288,9 +288,23 @@ def process_pdf(pdf_path, auto=False):
         matched = find_member(n, members)
         if matched: meeting_entry['notAttending'].append(matched)
 
+    # Auto-add any unmatched role members as new members
+    new_members_added = []
     for r in parsed['roles']:
         matched = find_member(r['member'], members)
-        if matched: meeting_entry['roles'].append({'role': r['role'], 'member': matched})
+        if not matched and r['member']:
+            new_member = {'name': r['member'], 'active': True, 'manualRoles': []}
+            data['members'].append(new_member)
+            members = data['members']
+            matched = r['member']
+            new_members_added.append(r['member'])
+        if matched:
+            meeting_entry['roles'].append({'role': r['role'], 'member': matched})
+
+    if new_members_added:
+        print(f"\n  ** Auto-added {len(new_members_added)} new member(s):")
+        for n in new_members_added:
+            print(f"    + {n}")
 
     existing_dates = [m['date'] for m in data.get('meetings', [])]
     if meeting_entry['date'] in existing_dates:

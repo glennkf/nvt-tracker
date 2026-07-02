@@ -75,6 +75,7 @@
     gap: 0;
     overflow-x: auto;
     padding: 0 2rem;
+    align-items: center;
   }
   nav button {
     background: none;
@@ -486,6 +487,12 @@
   <button onclick="showTab('members')">Members</button>
   <button onclick="showTab('levels')">Pathways Role Checklist</button>
   <button onclick="showTab('meetings')">Meetings</button>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:8px;padding:0 1.5rem">
+    <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);white-space:nowrap">TM Year:</span>
+    <select id="year-select" onchange="onYearChange()" style="font-family:'DM Sans',sans-serif;font-size:0.78rem;padding:4px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:white;cursor:pointer">
+      <option value="all">All years</option>
+    </select>
+  </div>
 </nav>
 
 <main>
@@ -628,13 +635,14 @@ function onYearChange() {
 }
 
 function populateYearSelect() {
+  const sel = document.getElementById('year-select');
+  if (!sel || !DATA || !DATA.meetings) return;
   const years = new Set();
   DATA.meetings.forEach(m => {
     const y = getTMYear(m.date);
     if (y) years.add(y);
   });
   const sorted = [...years].sort().reverse();
-  const sel = document.getElementById('year-select');
   // Clear existing options except "All years"
   sel.innerHTML = '<option value="all">All years</option>';
   sorted.forEach(y => {
@@ -664,7 +672,8 @@ async function loadData() {
     init();
   } catch(e) {
     document.getElementById('loading').style.display = 'none';
-    document.getElementById('error-area').innerHTML = `<div class="error-banner">
+    const errArea = document.getElementById('error-area');
+    if (errArea) errArea.innerHTML = `<div class="error-banner">
       Could not load data.json. Make sure the file is in the <code>data/</code> folder next to this HTML file.<br>
       <small>Error: ${e.message}</small>
     </div>`;

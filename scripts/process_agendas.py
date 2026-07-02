@@ -275,12 +275,26 @@ def list_pdfs(service):
     return results.get('files', [])
 
 def read_pdf_text(service, file_id):
-    # Export PDF as plain text via Drive API
-    request = service.files().export_media(fileId=file_id, mimeType='text/plain')
-    content = request.execute()
-    if isinstance(content, bytes):
-        return content.decode('utf-8', errors='replace')
-    return content
+    import io
+    import pdfplumber
+    from googleapiclient.http import MediaIoBaseDownload
+
+    # Download raw PDF bytes
+    request = service.files().get_media(fileId=file_id)
+    fh = io.BytesIO()
+    downloader = MediaIoBaseDownload(fh, request)
+    done = False
+    while not done:
+        _, done = downloader.next_chunk()
+    fh.seek(0)
+
+    # Extract text using pdfplumber
+    text = ""
+    with pdfplumber.open(fh) as pdf:
+        for page in pdf.pages:
+            page_text = page.extract_text() or ""
+            text += page_text + "\n"
+    return text
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────
 def main():

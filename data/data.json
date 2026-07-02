@@ -238,9 +238,185 @@
       "name": "Taina Chatelain",
       "active": true,
       "manualRoles": []
+    },
+    {
+      "name": "return from break -",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Helen E. Long",
+      "active": true,
+      "manualRoles": []
     }
   ],
   "meetings": [
+    {
+      "date": "2026-04-15",
+      "title": "April 15, 2026",
+      "attending": [
+        "Allison Pelton",
+        "Amanda Stanton",
+        "Angela Nuss",
+        "Daniel J. Wallace",
+        "Jennifer McGhee",
+        "Lisa M. Axios",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Mary Ahlfeld",
+        "Maureen DeRoma",
+        "Michele O'Connor",
+        "Renate S. Devin"
+      ],
+      "notAttending": [
+        "Christopher Dixon"
+      ],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Allison Pelton"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Renate S. Devin"
+        },
+        {
+          "role": "Timer",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Speaker",
+          "member": "Mary Ahlfeld"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Michele O'Connor"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "return from break -"
+        },
+        {
+          "role": "(end) Attending:",
+          "member": "Allison Pelton"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-06",
+      "title": "May 6, 2026",
+      "attending": [
+        "Amanda Stanton",
+        "Angela Nuss",
+        "Daniel J. Wallace",
+        "Jennifer McGhee",
+        "Lisa M. Axios",
+        "Lisa Walker",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Maureen DeRoma",
+        "Michele Chamberlain",
+        "Michele O'Connor",
+        "Renate S. Devin"
+      ],
+      "notAttending": [],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Renate S. Devin"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Timer",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Helen E. Long"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Mary Ahlfeld"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "(end) Attending:",
+          "member": "Amanda Stanton"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-20",
+      "title": "May 20, 2026",
+      "attending": [
+        "Angela Nuss",
+        "Daniel J. Wallace",
+        "Glenn Fernandes",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Maureen DeRoma",
+        "Michele Chamberlain"
+      ],
+      "notAttending": [
+        "Jennifer McGhee"
+      ],
+      "roles": [
+        {
+          "role": "Toastmaster",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Timer",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "return from break -"
+        },
+        {
+          "role": "(end) Attending:",
+          "member": "Angela Nuss"
+        }
+      ]
+    },
     {
       "date": "2026-06-03",
       "title": "June 3, 2026",
@@ -304,6 +480,67 @@
         {
           "role": "Table Topics Master",
           "member": "Renate S. Devin"
+        }
+      ]
+    },
+    {
+      "date": "2026-06-17",
+      "title": "June 17, 2026",
+      "attending": [
+        "Angela Nuss",
+        "Daniel J. Wallace",
+        "Helen E. Long",
+        "Lisa M. Axios",
+        "Lisa Walker",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Maureen DeRoma",
+        "Michele Chamberlain"
+      ],
+      "notAttending": [
+        "Amanda Stanton",
+        "Glenn Fernandes"
+      ],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Speaker",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Speaker",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "return from break -"
+        },
+        {
+          "role": "(end) Attending:",
+          "member": "Angela Nuss"
         }
       ]
     }

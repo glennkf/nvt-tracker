@@ -455,6 +455,17 @@
     font-size: 0.85rem;
     margin-bottom: 1rem;
   }
+  #year-select option { background: var(--navy); color: white; }
+  .year-indicator {
+    display: inline-block;
+    background: rgba(245,168,0,0.2);
+    color: #F5A800;
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+  }
 </style>
 </head>
 <body>
@@ -473,7 +484,7 @@
 <nav>
   <button class="active" onclick="showTab('overview')">Overview</button>
   <button onclick="showTab('members')">Members</button>
-  <button onclick="showTab('levels')">Pathways Levels</button>
+  <button onclick="showTab('levels')">Pathways Role Checklist</button>
   <button onclick="showTab('meetings')">Meetings</button>
 </nav>
 
@@ -590,6 +601,58 @@
 let DATA = null;
 let currentMember = null;
 let activeTab = 'overview';
+let selectedYear = 'current'; // 'all' or 'YYYY-YYYY' e.g. '2025-2026'
+
+function getTMYear(dateStr) {
+  // TM year runs July 1 - June 30
+  // A meeting on 2026-01-15 belongs to TM year "2025-2026"
+  if (!dateStr) return null;
+  const d = new Date(dateStr + 'T00:00:00');
+  const month = d.getMonth() + 1; // 1-12
+  const year = d.getFullYear();
+  if (month >= 7) return `${year}-${year+1}`;
+  return `${year-1}-${year}`;
+}
+
+function getMeetingsForYear(year) {
+  if (!year || year === 'all') return DATA.meetings;
+  return DATA.meetings.filter(m => getTMYear(m.date) === year);
+}
+
+function onYearChange() {
+  selectedYear = document.getElementById('year-select').value;
+  overviewStats = null; // force recalc
+  buildOverview();
+  buildMemberList();
+  // NOTE: Pathways Role Checklist always uses all-time data - not rebuilt here
+}
+
+function populateYearSelect() {
+  const years = new Set();
+  DATA.meetings.forEach(m => {
+    const y = getTMYear(m.date);
+    if (y) years.add(y);
+  });
+  const sorted = [...years].sort().reverse();
+  const sel = document.getElementById('year-select');
+  // Clear existing options except "All years"
+  sel.innerHTML = '<option value="all">All years</option>';
+  sorted.forEach(y => {
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y;
+    sel.appendChild(opt);
+  });
+  // Default to current TM year if available
+  const currentY = getTMYear(new Date().toISOString().split('T')[0]);
+  if (years.has(currentY)) {
+    sel.value = currentY;
+    selectedYear = currentY;
+  } else if (sorted.length > 0) {
+    sel.value = sorted[0];
+    selectedYear = sorted[0];
+  }
+}
 
 const DATA_URL = 'data/data.json';
 
@@ -613,6 +676,7 @@ function init() {
   document.getElementById('app').style.display = 'block';
   document.getElementById('year-badge').textContent = DATA.club.tmYear;
   document.getElementById('header-sub').textContent = 'Role Tracker — ' + DATA.club.tmYear;
+  populateYearSelect();
   buildOverview();
   buildMemberList();
   buildLevels();
@@ -637,7 +701,8 @@ function normalizeRole(rawRole) {
   return rawRole;
 }
 
-function getMemberStats() {
+function getMemberStats(meetingsOverride) {
+  const meetings = meetingsOverride || getMeetingsForYear(selectedYear);
   const stats = {};
   const activeMembers = DATA.members.filter(m => m.active);
   activeMembers.forEach(m => {
@@ -647,13 +712,13 @@ function getMemberStats() {
       distinctRoles: new Set(),
       roleCounts: {},
       meetingsAttended: 0,
-      meetingsTotal: DATA.meetings.length,
+      meetingsTotal: meetings.length,
       meetingsRolesFilled: 0,
       roleHistory: []
     };
   });
 
-  DATA.meetings.forEach(mtg => {
+  meetings.forEach(mtg => {
     const attending = (mtg.attending || []).map(n => cleanName(n));
     attending.forEach(n => {
       const matched = matchMember(n);
@@ -682,6 +747,9 @@ function getMemberStats() {
       if (m.manualRoles) {
         m.manualRoles.forEach(mr => {
           if (!stats[m.name]) return;
+          // Filter manual roles by selected year too
+          const mrYear = getTMYear(mr.date);
+          if (selectedYear !== 'all' && mrYear && mrYear !== selectedYear) return;
           const s = stats[m.name];
           s.totalRoles++;
           s.distinctRoles.add(mr.role);
@@ -798,10 +866,11 @@ function buildOverview() {
   const avgRoles = members.length > 0 ? Math.round(totalRoles / members.length) : 0;
   const maxRoles = Math.max(...Object.values(overviewStats).map(s => s.totalRoles));
 
+  const yearLabel = selectedYear === 'all' ? 'All years' : selectedYear;
   document.getElementById('overview-stats').innerHTML = `
     <div class="stat-card"><div class="label">Members</div><div class="value">${members.length}</div></div>
-    <div class="stat-card"><div class="label">Meetings logged</div><div class="value">${totalMeetings}</div></div>
-    <div class="stat-card"><div class="label">Total role fills</div><div class="value">${totalRoles}</div></div>
+    <div class="stat-card"><div class="label">Meetings<span class="year-indicator">${yearLabel}</span></div><div class="value">${totalMeetings}</div></div>
+    <div class="stat-card"><div class="label">Role fills<span class="year-indicator">${yearLabel}</span></div><div class="value">${totalRoles}</div></div>
     <div class="stat-card"><div class="label">Avg roles / member</div><div class="value">${avgRoles}</div></div>
     <div class="stat-card"><div class="label">Most active</div><div class="value" style="font-size:1.1rem">${maxRoles}</div><div class="sub">role fills</div></div>
   `;
@@ -817,8 +886,9 @@ function buildOverview() {
     "Evaluator",
     "Table Topics Master"
   ];
+  const filteredMeetings = getMeetingsForYear(selectedYear);
   const allRoles = new Set();
-  DATA.meetings.forEach(m => (m.roles||[]).forEach(r => {
+  filteredMeetings.forEach(m => (m.roles||[]).forEach(r => {
     const n = normalizeRole(r.role);
     if (n) allRoles.add(n);
   }));
@@ -859,8 +929,9 @@ function renderOverviewTable() {
     "Evaluator",
     "Table Topics Master"
   ];
+  const filteredMtgs = getMeetingsForYear(selectedYear);
   const allRoles = new Set();
-  DATA.meetings.forEach(m => (m.roles||[]).forEach(r => {
+  filteredMtgs.forEach(m => (m.roles||[]).forEach(r => {
     const n = normalizeRole(r.role);
     if (n) allRoles.add(n);
   }));
@@ -935,7 +1006,9 @@ function showMemberDetail(name) {
   const s = overviewStats[name];
   if (!s) return;
 
-  const lvls = getLevelStatus(name, overviewStats);
+  // Pathways checklist always uses all-time stats
+  const allTimeStats = getMemberStats(DATA.meetings);
+  const lvls = getLevelStatus(name, allTimeStats);
   const completedLevels = Object.values(lvls).filter(l => l.complete).length;
 
   const sortedRoles = Object.entries(s.roleCounts).sort((a,b) => b[1]-a[1]);
@@ -1030,16 +1103,17 @@ function showMemberDetail(name) {
 function buildLevels() { renderLevelsTable(); }
 
 function renderLevelsTable() {
-  if (!overviewStats) overviewStats = getMemberStats();
+  // Pathways Role Checklist always uses ALL-TIME data
+  const allTimeStats = getMemberStats(DATA.meetings);
   const search = document.getElementById('levels-search')?.value.toLowerCase() || '';
   const filter = document.getElementById('levels-filter')?.value || 'all';
 
-  let members = Object.values(overviewStats).filter(s => !search || s.name.toLowerCase().includes(search));
+  let members = Object.values(allTimeStats).filter(s => !search || s.name.toLowerCase().includes(search));
   members.sort((a,b) => a.name.localeCompare(b.name));
 
   const tbody = document.getElementById('levels-tbody');
   tbody.innerHTML = members.map(s => {
-    const lvls = getLevelStatus(s.name, overviewStats);
+    const lvls = getLevelStatus(s.name, allTimeStats);
     const completedCount = Object.values(lvls).filter(l => l.complete).length;
     if (filter === 'incomplete' && completedCount === 5) return '';
 

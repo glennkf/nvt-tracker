@@ -484,6 +484,9 @@
     padding: 1.5rem;
     max-width: 400px;
     width: 90%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
     box-shadow: 0 20px 60px rgba(0,0,0,0.2);
   }
   .modal-header {
@@ -502,7 +505,7 @@
     padding: 0;
   }
   .modal-close:hover { color: var(--text-primary); }
-  .modal-member-list { list-style: none; }
+  .modal-member-list { list-style: none; overflow-y: auto; flex: 1; }
   .modal-member-list li {
     padding: 6px 0;
     border-bottom: 1px solid #f5f5f5;
@@ -684,6 +687,13 @@ function getMeetingsForYear(year) {
   const filtered = DATA.meetings.filter(m => getTMYear(m.date) === year);
   // If filter returns nothing (bad year value), fall back to all
   return filtered.length > 0 ? filtered : DATA.meetings;
+}
+
+const FTR_ROLES = ['Thought of the day', 'Toastmaster', 'Joke of the day', 'Timer',
+  'Grammarian', 'Speaker', 'General Evaluator', 'Evaluator', 'Table Topics Master'];
+
+function hasFTR(stats) {
+  return FTR_ROLES.every(r => (stats.roleCounts[r] || 0) > 0);
 }
 
 function onYearChange() {
@@ -1013,6 +1023,10 @@ function buildOverview() {
   const mostActiveName = mostActiveEntry ? mostActiveEntry.name.split(' ')[0] + ' ' + mostActiveEntry.name.split(' ').pop() : '—';
   const mostActiveCount = mostActiveEntry ? mostActiveEntry.totalRoles : 0;
 
+  // Fill the Roles achievers
+  const ftrAchievers = Object.values(overviewStats).filter(s => hasFTR(s));
+  const ftrCount = ftrAchievers.length;
+
   // Not yet participated
   const notParticipated = Object.values(overviewStats).filter(s => s.totalRoles === 0);
   const notParticipatedCount = notParticipated.length;
@@ -1032,6 +1046,11 @@ function buildOverview() {
       <div class="label">No meeting role yet</div>
       <div class="value" style="color:${notParticipatedCount > 0 ? 'var(--maroon)' : 'var(--green)'}">${notParticipatedCount}</div>
       <div class="sub">click to view</div>
+    </div>
+    <div class="stat-card clickable-card" onclick="showFTRAchievers()" style="cursor:pointer" title="Click to see achievers">
+      <div class="label">🏆 Fill the Roles</div>
+      <div class="value" style="color:${ftrCount > 0 ? '#b8860b' : 'var(--text-muted)'}">${ftrCount}</div>
+      <div class="sub">all 9 roles filled</div>
     </div>
   `;
 
@@ -1148,7 +1167,7 @@ function renderMemberList() {
   const tbody = document.getElementById('member-list-tbody');
   tbody.innerHTML = members.map(s => `
     <tr style="cursor:pointer" onclick="showMemberDetail('${s.name.replace(/'/g,"\\'")}')">
-      <td class="member-name" style="color:var(--navy)">${s.name}</td>
+      <td class="member-name" style="color:var(--navy)">${s.name}${hasFTR(s) ? ' <span title="Fill the Roles achiever" style="font-size:0.85rem">🏆</span>' : ''}</td>
       <td><span class="count-badge ${s.totalRoles === 0 ? 'zero' : ''}">${s.totalRoles}</span></td>
       <td><span class="count-badge ${s.distinctRolesCount === 0 ? 'zero' : ''}">${s.distinctRolesCount}</span></td>
       <td>${s.meetingsAttended} / ${s.meetingsTotal}</td>
@@ -1292,7 +1311,7 @@ function renderLevelsTable() {
 
     return `
       <tr style="cursor:pointer" onclick="showMemberDetail('${s.name.replace(/'/g,"\\'")}')">
-        <td class="member-name" style="color:var(--navy)">${s.name}</td>
+        <td class="member-name" style="color:var(--navy)">${s.name}${hasFTR(s) ? ' <span title="Fill the Roles achiever" style="font-size:0.85rem">🏆</span>' : ''}</td>
         ${levelCells}
         <td><span class="count-badge ${completedCount === 0 ? 'zero' : completedCount === 5 ? 'high' : ''}">${completedCount} / 5</span></td>
       </tr>
@@ -1348,6 +1367,20 @@ function showSpeechesList() {
     ? '<li style="color:var(--text-muted)">No speeches recorded yet</li>'
     : speeches.map(s => `<li><span style="font-weight:500">${s.member}</span><span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted)">${s.date}</span></li>`).join('');
   
+  document.getElementById('not-participated-modal').classList.add('open');
+}
+
+function showFTRAchievers() {
+  if (!overviewStats) return;
+  const achievers = Object.values(overviewStats)
+    .filter(s => hasFTR(s))
+    .sort((a,b) => a.name.localeCompare(b.name));
+  const yearLabel = selectedYear === 'all' ? 'All years' : selectedYear;
+  document.getElementById('modal-title').textContent =
+    `🏆 Fill the Roles — ${yearLabel} (${achievers.length})`;
+  document.getElementById('modal-member-list').innerHTML = achievers.length === 0
+    ? '<li style="color:var(--text-muted)">No members have completed all 9 roles yet this year</li>'
+    : achievers.map(s => `<li><span style="font-weight:500">${s.name}</span><span style="color:#b8860b">🏆</span></li>`).join('');
   document.getElementById('not-participated-modal').classList.add('open');
 }
 

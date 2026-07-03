@@ -853,15 +853,38 @@ function cleanName(raw) {
 
 function matchMember(name) {
   if (!name) return null;
-  // Normalize hyphens to spaces for matching
   const lower = name.toLowerCase().replace(/-/g, ' ');
+  // Pass 1: exact match
   for (const m of DATA.members) {
-    const mLower = m.name.toLowerCase().replace(/-/g, ' ');
-    if (mLower === lower) return m.name;
-    const parts = mLower.split(' ');
-    const nameParts = lower.split(' ');
-    if (parts[parts.length-1] === nameParts[nameParts.length-1] &&
-        parts[0][0] === nameParts[0]?.[0]) return m.name;
+    if (m.name.toLowerCase().replace(/-/g, ' ') === lower) return m.name;
+  }
+  const parts = lower.split(' ');
+  // Build last name uniqueness map
+  const lastNameCounts = {};
+  DATA.members.forEach(m => {
+    const last = m.name.toLowerCase().replace(/-/g,' ').split(' ').pop();
+    lastNameCounts[last] = (lastNameCounts[last] || 0) + 1;
+  });
+  // Pass 2: last name + first 3 chars
+  for (const m of DATA.members) {
+    const mp = m.name.toLowerCase().replace(/-/g,' ').split(' ');
+    if (parts.length >= 2 && mp.length >= 2 &&
+        mp[mp.length-1] === parts[parts.length-1] &&
+        parts[0].length >= 3 && mp[0].length >= 3 &&
+        mp[0].slice(0,3) === parts[0].slice(0,3)) return m.name;
+  }
+  // Pass 3: last name + first initial, only if last name is unique
+  for (const m of DATA.members) {
+    const mp = m.name.toLowerCase().replace(/-/g,' ').split(' ');
+    const last = parts[parts.length-1];
+    if (parts.length >= 2 && mp.length >= 2 &&
+        mp[mp.length-1] === last &&
+        mp[0][0] === parts[0]?.[0] &&
+        (lastNameCounts[last] || 0) === 1) return m.name;
+  }
+  // Pass 4: substring
+  for (const m of DATA.members) {
+    const mLower = m.name.toLowerCase().replace(/-/g,' ');
     if (mLower.includes(lower) || lower.includes(mLower)) return m.name;
   }
   return null;

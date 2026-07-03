@@ -55,7 +55,7 @@ SKIP_CONTAINS = [
 ]
 
 CRED_RE = re.compile(
-    r',\s*(DTM|ACB|ACS|ACG|ALB|ALS|CC|CL|CTM|TM|'
+    r',\s*(DTM|IPE|ACB|ACS|ACG|ALB|ALS|CC|CL|CTM|TM|'
     r'Pathways[\s\w]+\d*|MS\d*|VC\d*|LD\d*|SR\d*)[^,]*',
     re.IGNORECASE
 )
@@ -97,16 +97,32 @@ def find_member(name, members):
     if not name: return None
     # Normalize hyphens to spaces for matching
     low = name.lower().replace('-', ' ')
+    # Pass 1: exact match
     for m in members:
         mlow = m['name'].lower().replace('-', ' ')
         if mlow == low: return m['name']
+    # Pass 2: last name + first 3 chars of first name (avoids M. O'Connor ambiguity)
     parts = low.split()
     for m in members:
         mp = m['name'].lower().replace('-', ' ').split()
         if (len(parts) >= 2 and len(mp) >= 2 and
             mp[-1] == parts[-1] and
-            mp[0][0] == parts[0][0]):
+            len(parts[0]) >= 3 and len(mp[0]) >= 3 and
+            mp[0][:3] == parts[0][:3]):
             return m['name']
+    # Pass 3: last name + first initial (only if no ambiguity - last name is unique)
+    last_name_counts = {}
+    for m in members:
+        last = m['name'].lower().replace('-',' ').split()[-1]
+        last_name_counts[last] = last_name_counts.get(last, 0) + 1
+    for m in members:
+        mp = m['name'].lower().replace('-', ' ').split()
+        if (len(parts) >= 2 and len(mp) >= 2 and
+            mp[-1] == parts[-1] and
+            mp[0][0] == parts[0][0] and
+            last_name_counts.get(parts[-1], 0) == 1):  # only if last name is unique
+            return m['name']
+    # Pass 4: substring match
     for m in members:
         mlow = m['name'].lower().replace('-', ' ')
         if low in mlow or mlow in low:

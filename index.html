@@ -510,6 +510,7 @@
     color: var(--text-secondary);
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
   }
   .modal-member-list li:last-child { border-bottom: none; }
@@ -869,60 +870,101 @@ function matchMember(name) {
 function getLevelStatus(memberName, stats) {
   const s = stats[memberName];
   if (!s) return {};
-  const rc = s.roleCounts;
+
+  // Work with a mutable pool of role counts - roles get consumed level by level
+  const pool = {};
+  Object.entries(s.roleCounts).forEach(([role, count]) => { pool[role] = count; });
+
+  // Helper: consume N of a role from pool, return true if available
+  function consume(role, n=1) {
+    if ((pool[role] || 0) >= n) { pool[role] -= n; return true; }
+    return false;
+  }
+  // Consume the best available from a list of options
+  function consumeAny(roles) {
+    for (const r of roles) {
+      if ((pool[r] || 0) > 0) { pool[r]--; return true; }
+    }
+    return false;
+  }
+  // Peek without consuming
+  function available(role) { return (pool[role] || 0) > 0; }
+  function availableAny(roles) { return roles.some(r => available(r)); }
+  // Count available in pool
+  function count(role) { return pool[role] || 0; }
+
   const results = {};
 
-  const get = (role) => rc[role] || 0;
-  const has = (role) => get(role) > 0;
-  const hasAny = (roles) => roles.some(r => has(r));
-
+  // LEVEL 1
+  const l1_tts = consume('Table Topics Speaker');
+  const l1_ev = consume('Evaluator');
+  const l1_tg = consumeAny(['Timer', 'Grammarian']);
   results[1] = {
     reqs: [
-      { label: 'Table Topics Speaker', done: has('Table Topics Speaker'), count: get('Table Topics Speaker') },
-      { label: 'Evaluator', done: has('Evaluator'), count: get('Evaluator') },
-      { label: 'Timer OR Grammarian', done: has('Timer') || has('Grammarian'), count: get('Timer') + get('Grammarian') }
+      { label: 'Table Topics Speaker', done: l1_tts, count: s.roleCounts['Table Topics Speaker'] || 0 },
+      { label: 'Evaluator', done: l1_ev, count: s.roleCounts['Evaluator'] || 0 },
+      { label: 'Timer OR Grammarian', done: l1_tg, count: (s.roleCounts['Timer'] || 0) + (s.roleCounts['Grammarian'] || 0) }
     ]
   };
   results[1].complete = results[1].reqs.every(r => r.done);
 
+  // LEVEL 2
+  const l2_gram = consume('Grammarian');
+  const l2_ttm = consume('Table Topics Master');
+  const l2_ev = consume('Evaluator');
+  const l2_tg = consumeAny(['Toastmaster', 'Timer', 'Grammarian']);
   results[2] = {
     reqs: [
-      { label: 'Grammarian', done: has('Grammarian'), count: get('Grammarian') },
-      { label: 'Table Topics Master', done: has('Table Topics Master'), count: get('Table Topics Master') },
-      { label: 'Evaluator', done: has('Evaluator'), count: get('Evaluator') },
-      { label: 'Toastmaster, Timer, OR Grammarian', done: has('Toastmaster') || has('Timer') || has('Grammarian'), count: get('Toastmaster') + get('Timer') + get('Grammarian') }
+      { label: 'Grammarian', done: l2_gram, count: s.roleCounts['Grammarian'] || 0 },
+      { label: 'Table Topics Master', done: l2_ttm, count: s.roleCounts['Table Topics Master'] || 0 },
+      { label: 'Evaluator', done: l2_ev, count: s.roleCounts['Evaluator'] || 0 },
+      { label: 'Toastmaster, Timer, OR Grammarian', done: l2_tg, count: (s.roleCounts['Toastmaster'] || 0) + (s.roleCounts['Timer'] || 0) + (s.roleCounts['Grammarian'] || 0) }
     ]
   };
   results[2].complete = results[2].reqs.every(r => r.done);
 
+  // LEVEL 3
+  const l3_tm = consume('Toastmaster');
+  const l3_ev = consume('Evaluator');
+  const l3_elec = consumeAny(['Table Topics Master', 'Table Topics Speaker', 'Introductory Mentor']);
   results[3] = {
     reqs: [
-      { label: 'Toastmaster', done: has('Toastmaster'), count: get('Toastmaster') },
-      { label: 'Evaluator', done: has('Evaluator'), count: get('Evaluator') },
-      { label: 'Table Topics Master, Speaker, OR Introductory Mentor', done: has('Table Topics Master') || has('Table Topics Speaker') || has('Introductory Mentor'), count: get('Table Topics Master') + get('Table Topics Speaker') + get('Introductory Mentor') }
+      { label: 'Toastmaster', done: l3_tm, count: s.roleCounts['Toastmaster'] || 0 },
+      { label: 'Evaluator', done: l3_ev, count: s.roleCounts['Evaluator'] || 0 },
+      { label: 'Table Topics Master, Speaker, OR Introductory Mentor', done: l3_elec, count: (s.roleCounts['Table Topics Master'] || 0) + (s.roleCounts['Table Topics Speaker'] || 0) + (s.roleCounts['Introductory Mentor'] || 0) }
     ]
   };
   results[3].complete = results[3].reqs.every(r => r.done);
 
+  // LEVEL 4
+  const l4_tm = consume('Toastmaster');
+  const l4_ge = consume('General Evaluator');
+  const l4_ev = consume('Evaluator');
+  const l4_elec = consumeAny(['Table Topics Speaker', 'Table Topics Master', 'Specialized Role', 'Toastmaster', 'General Evaluator', 'Evaluator']);
   results[4] = {
     reqs: [
-      { label: 'Toastmaster', done: has('Toastmaster'), count: get('Toastmaster') },
-      { label: 'General Evaluator', done: has('General Evaluator'), count: get('General Evaluator') },
-      { label: 'Evaluator', done: has('Evaluator'), count: get('Evaluator') },
-      { label: 'Elective (TT Speaker/Master/Specialized/repeat)', done: hasAny(['Table Topics Speaker','Table Topics Master','Specialized Role']) || get('Toastmaster')>1 || get('General Evaluator')>1 || get('Evaluator')>1, count: 0 }
+      { label: 'Toastmaster', done: l4_tm, count: s.roleCounts['Toastmaster'] || 0 },
+      { label: 'General Evaluator', done: l4_ge, count: s.roleCounts['General Evaluator'] || 0 },
+      { label: 'Evaluator', done: l4_ev, count: s.roleCounts['Evaluator'] || 0 },
+      { label: 'Elective (TT Speaker/Master/Specialized/repeat)', done: l4_elec, count: 0 }
     ]
   };
   results[4].complete = results[4].reqs.every(r => r.done);
 
-  const ge = get('General Evaluator');
-  const tm = get('Toastmaster');
-  const ev = get('Evaluator');
+  // LEVEL 5 - needs 2× GE, 2× TM, 2× Evaluator + elective
+  const l5_ge1 = consume('General Evaluator');
+  const l5_ge2 = consume('General Evaluator');
+  const l5_tm1 = consume('Toastmaster');
+  const l5_tm2 = consume('Toastmaster');
+  const l5_ev1 = consume('Evaluator');
+  const l5_ev2 = consume('Evaluator');
+  const l5_elec = consumeAny(['Table Topics Speaker', 'Table Topics Master', 'Grammarian', 'Timer', 'Club Mentor', 'Specialized Role', 'General Evaluator', 'Toastmaster', 'Evaluator']);
   results[5] = {
     reqs: [
-      { label: 'General Evaluator (×2)', done: ge >= 2, count: ge },
-      { label: 'Toastmaster (×2)', done: tm >= 2, count: tm },
-      { label: 'Evaluator (×2)', done: ev >= 2, count: ev },
-      { label: 'Elective', done: hasAny(['Table Topics Speaker','Table Topics Master','Grammarian','Timer','Club Mentor','Specialized Role']) || ge>2 || tm>2 || ev>2, count: 0 }
+      { label: 'General Evaluator (×2)', done: l5_ge1 && l5_ge2, count: s.roleCounts['General Evaluator'] || 0 },
+      { label: 'Toastmaster (×2)', done: l5_tm1 && l5_tm2, count: s.roleCounts['Toastmaster'] || 0 },
+      { label: 'Evaluator (×2)', done: l5_ev1 && l5_ev2, count: s.roleCounts['Evaluator'] || 0 },
+      { label: 'Elective', done: l5_elec, count: 0 }
     ]
   };
   results[5].complete = results[5].reqs.every(r => r.done);
@@ -956,11 +998,15 @@ function buildOverview() {
   document.getElementById('overview-stats').innerHTML = `
     <div class="stat-card"><div class="label">Members</div><div class="value">${members.length}</div></div>
     <div class="stat-card"><div class="label">Meetings</div><div class="value">${totalMeetings}</div></div>
-    <div class="stat-card"><div class="label">Speakers</div><div class="value">${totalSpeakers}</div><div class="sub">speeches given</div></div>
+    <div class="stat-card clickable-card" onclick="showSpeechesList()" style="cursor:pointer" title="Click to see speeches">
+      <div class="label">Speakers</div>
+      <div class="value">${totalSpeakers}</div>
+      <div class="sub">${totalMeetings > 0 ? (totalSpeakers / totalMeetings).toFixed(1) : 0} avg / meeting</div>
+    </div>
     <div class="stat-card"><div class="label">Avg roles / member</div><div class="value">${avgRoles}</div></div>
     <div class="stat-card"><div class="label">Most active</div><div class="value" style="font-size:1.1rem">${mostActiveCount}</div><div class="sub">${mostActiveName}</div></div>
     <div class="stat-card clickable-card" onclick="showNotParticipated()" style="cursor:pointer" title="Click to see members">
-      <div class="label">Not yet participated</div>
+      <div class="label">No meeting role yet</div>
       <div class="value" style="color:${notParticipatedCount > 0 ? 'var(--maroon)' : 'var(--green)'}">${notParticipatedCount}</div>
       <div class="sub">click to view</div>
     </div>
@@ -1102,8 +1148,11 @@ function showMemberDetail(name) {
   const lvls = getLevelStatus(name, allTimeStats);
   const completedLevels = Object.values(lvls).filter(l => l.complete).length;
 
-  const sortedRoles = Object.entries(s.roleCounts).sort((a,b) => b[1]-a[1]);
-  const history = [...s.roleHistory].sort((a,b) => b.date.localeCompare(a.date));
+  // Member detail always shows all-time stats
+  const allTimeMemberStats = getMemberStats(DATA.meetings);
+  const sAllTime = allTimeMemberStats[name] || s;
+  const sortedRoles = Object.entries(sAllTime.roleCounts).sort((a,b) => b[1]-a[1]);
+  const history = [...sAllTime.roleHistory].sort((a,b) => b.date.localeCompare(a.date));
 
   const levelCards = [1,2,3,4,5].map(lvl => {
     const l = lvls[lvl];
@@ -1134,9 +1183,9 @@ function showMemberDetail(name) {
       <div class="member-hero">
         <h2>${s.name}</h2>
         <div class="member-hero-stats">
-          <div><div class="hero-stat-label">Total roles</div><div class="hero-stat-value">${s.totalRoles}</div></div>
-          <div><div class="hero-stat-label">Distinct roles</div><div class="hero-stat-value">${s.distinctRolesCount}</div></div>
-          <div><div class="hero-stat-label">Meetings attended</div><div class="hero-stat-value">${s.meetingsAttended}</div></div>
+          <div><div class="hero-stat-label">Total roles</div><div class="hero-stat-value">${sAllTime.totalRoles}</div></div>
+          <div><div class="hero-stat-label">Distinct roles</div><div class="hero-stat-value">${sAllTime.distinctRolesCount}</div></div>
+          <div><div class="hero-stat-label">Meetings attended</div><div class="hero-stat-value">${sAllTime.meetingsAttended}</div></div>
           <div><div class="hero-stat-label">Levels complete</div><div class="hero-stat-value">${completedLevels} / 5</div></div>
         </div>
       </div>
@@ -1149,6 +1198,7 @@ function showMemberDetail(name) {
                 ${role} <strong style="color:var(--maroon)">${count}</strong>
               </span>
             `).join('')}
+          <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px">All-time</div>
         </div>
         <div class="section-label">Pathways level progress</div>
         <div class="level-checklist" style="padding:0;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.75rem;margin-bottom:1.5rem">
@@ -1255,6 +1305,29 @@ function buildMeetings() {
   }).join('');
 }
 
+function showSpeechesList() {
+  const meetings = getMeetingsForYear(selectedYear);
+  const speeches = [];
+  meetings.forEach(m => {
+    (m.roles || []).forEach(r => {
+      if (r.role === 'Speaker') {
+        speeches.push({ member: r.member, date: m.date, title: m.title });
+      }
+    });
+  });
+  speeches.sort((a,b) => b.date.localeCompare(a.date));
+
+  const yearLabel = selectedYear === 'all' ? 'All years' : selectedYear;
+  document.getElementById('modal-title').textContent = 
+    `Speeches given — ${yearLabel} (${speeches.length})`;
+  
+  document.getElementById('modal-member-list').innerHTML = speeches.length === 0
+    ? '<li style="color:var(--text-muted)">No speeches recorded yet</li>'
+    : speeches.map(s => `<li><span style="font-weight:500">${s.member}</span><span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted)">${s.date}</span></li>`).join('');
+  
+  document.getElementById('not-participated-modal').classList.add('open');
+}
+
 function showNotParticipated() {
   if (!overviewStats) return;
   const notParticipated = Object.values(overviewStats)
@@ -1263,11 +1336,12 @@ function showNotParticipated() {
   
   const yearLabel = selectedYear === 'all' ? 'All years' : selectedYear;
   document.getElementById('modal-title').textContent = 
-    `Not yet participated — ${yearLabel} (${notParticipated.length})`;
+    `No meeting role yet — ${yearLabel} (${notParticipated.length})`;
   
   document.getElementById('modal-member-list').innerHTML = notParticipated.length === 0
-    ? '<li style="color:var(--green)">All members have participated! 🎉</li>'
-    : notParticipated.map(s => `<li>${s.name}</li>`).join('');
+    ? '<li style="color:var(--green)">All members have filled a role! 🎉</li>'
+    : `<li style="color:var(--text-muted);font-size:0.78rem;font-style:italic;border-bottom:1px solid #f0f0f0;padding-bottom:8px;margin-bottom:4px">These members haven't filled a tracked meeting role ${yearLabel === 'All years' ? 'yet' : 'this year'}.</li>` +
+      notParticipated.map(s => `<li>${s.name}</li>`).join('');
   
   document.getElementById('not-participated-modal').classList.add('open');
 }

@@ -486,9 +486,9 @@
   <button onclick="showTab('members')">Members</button>
   <button onclick="showTab('levels')">Pathways Role Checklist</button>
   <button onclick="showTab('meetings')">Meetings</button>
-  <div style="margin-left:auto;display:flex;align-items:center;gap:8px;padding:0 1.5rem">
+  <div style="margin-left:auto;display:flex;align-items:center;gap:8px;padding:0 1rem;flex-shrink:0">
     <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);white-space:nowrap">TM Year:</span>
-    <select id="year-select" onchange="onYearChange()" style="font-family:'DM Sans',sans-serif;font-size:0.78rem;padding:4px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:white;cursor:pointer">
+    <select id="year-select" onchange="onYearChange()" style="font-family:'DM Sans',sans-serif;font-size:0.78rem;padding:4px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:var(--dark-navy);color:white;cursor:pointer;min-width:110px">
       <option value="all">All years</option>
     </select>
   </div>
@@ -630,6 +630,7 @@ function onYearChange() {
   overviewStats = null; // force recalc
   buildOverview();
   buildMemberList();
+  buildMeetings();
   // NOTE: Pathways Role Checklist always uses all-time data - not rebuilt here
 }
 
@@ -786,14 +787,16 @@ function cleanName(raw) {
 
 function matchMember(name) {
   if (!name) return null;
-  const lower = name.toLowerCase();
+  // Normalize hyphens to spaces for matching
+  const lower = name.toLowerCase().replace(/-/g, ' ');
   for (const m of DATA.members) {
-    if (m.name.toLowerCase() === lower) return m.name;
-    const parts = m.name.toLowerCase().split(' ');
+    const mLower = m.name.toLowerCase().replace(/-/g, ' ');
+    if (mLower === lower) return m.name;
+    const parts = mLower.split(' ');
     const nameParts = lower.split(' ');
     if (parts[parts.length-1] === nameParts[nameParts.length-1] &&
         parts[0][0] === nameParts[0]?.[0]) return m.name;
-    if (m.name.toLowerCase().includes(lower) || lower.includes(m.name.toLowerCase())) return m.name;
+    if (mLower.includes(lower) || lower.includes(mLower)) return m.name;
   }
   return null;
 }
@@ -1142,7 +1145,7 @@ function renderLevelsTable() {
 }
 
 function buildMeetings() {
-  const meetings = [...DATA.meetings].sort((a,b) => b.date.localeCompare(a.date));
+  const meetings = [...getMeetingsForYear(selectedYear)].sort((a,b) => b.date.localeCompare(a.date));
   document.getElementById('meetings-count').textContent = meetings.length + ' meeting' + (meetings.length !== 1 ? 's' : '');
 
   document.getElementById('meetings-list').innerHTML = meetings.map(m => {

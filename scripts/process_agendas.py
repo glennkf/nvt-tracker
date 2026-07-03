@@ -37,29 +37,33 @@ ROLE_ALIASES = {
     'secretary/role call': None, 'secretary': None,
     'sergeant at arms': None,
     'toastmaster return from break': None, 'toastmasters return from break': None,
+    'return from break': None, 'return from break –': None,
     'timer report': None, 'voting results': None, 'voting for officers': None,
     'best speaker/evaluator': None, 'break': None,
+    '(end) attending:': None, 'attending:': None,
+    'not attending:': None,
 }
 
 SKIP_CONTAINS = [
     'path / project', 'project title', 'evaluates the meeting',
-    'impromptu speaking', 'evaluates the usage', 'opens meeting'
+    'impromptu speaking', 'evaluates the usage', 'opens meeting',
+    'attending:', '(end) attending', 'not attending', 'meeting notes'
 ]
 
 CRED_RE = re.compile(
     r',\s*(DTM|ACB|ACS|ACG|ALB|ALS|CC|CL|CTM|TM|'
-    r'Pathways[\s\w]+\d*|MS\d+|VC\d+|LD\d+|SR\d+)[^,]*',
+    r'Pathways[\s\w]+\d*|MS\d*|VC\d*|LD\d*|SR\d*)[^,]*',
     re.IGNORECASE
 )
 CRED_FRAG = re.compile(
-    r'^(DTM|ACB|MS\d+|VC\d+|LD\d+|SR\d+|Pathways\s+\w+|Pathways\s+Mentor|CC|CL)$',
+    r'^(DTM|ACB|MS\d*|VC\d*|LD\d*|SR\d*|Pathways\s+\w+|Pathways\s+Mentor|CC|CL)$',
     re.IGNORECASE
 )
 TIME_RE = re.compile(r'(\d{1,2}:\d{2}(?:AM|PM))', re.IGNORECASE)
 
 # ─── NAME UTILS ───────────────────────────────────────────────────────────────
 def clean_name(raw):
-    if not raw or raw.strip() in ('-', '', '—'): return None
+    if not raw or raw.strip() in ('-', '', '—', '–', '-', '- '): return None
     cleaned = CRED_RE.sub('', raw).strip().strip(',').strip()
     cleaned = re.sub(r'\s+', ' ', cleaned)
     if not cleaned or len(cleaned) < 3: return None
@@ -102,7 +106,7 @@ def find_member(name, members):
 # ─── PARSE AGENDA TEXT ────────────────────────────────────────────────────────
 KNOWN_ROLES = [
     r'Thought of the day',
-    r'Toastmaster(?!s)',
+    r'Toastmaster(?!s?\s+return)',
     r'Joke of the day',
     r'Timer(?!\s+Report)',
     r'Grammarian/Word of the Day(?:\s+Report)?',
@@ -141,51 +145,108 @@ def parse_agenda_text(text, filename=''):
     if dm:
         date = f"{dm.group(3)}-{MONTHS[dm.group(1).lower()]}-{dm.group(2).zfill(2)}"
 
-    # Flatten text and split by time markers
-    flat = ' '.join(l.strip() for l in text.split('\n') if l.strip())
-    segments = TIME_RE.split(flat)
-    # segments: ['prefix', 'TIME', 'role+member', 'TIME', 'role+member', ...]
-
+    # Parse line by line - handles both "TIME ROLE MEMBER" and split lines
+    lines = [l.strip() for l in text.split('\n') if l.strip()]
     roles = []
     seen_times = set()
+    i = 0
+    stop_parsing = False
 
-    for i in range(1, len(segments) - 1, 2):
-        time_key = segments[i]
+    while i < len(lines) and not stop_parsing:
+        line = lines[i]
+
+        # Stop at attending section
+        if re.match(r'^(Attending:|Not Attending:|Meeting Notes?:)', line, re.IGNORECASE):
+            stop_parsing = True
+            break
+
+        # Check if line starts with a time marker
+        tm = re.match(r'^(\d{1,2}:\d{2}(?:AM|PM))\s+(.*)', line, re.IGNORECASE)
+        if not tm:
+            i += 1
+            continue
+
+        time_key = tm.group(1)
+        rest = tm.group(2).strip()
+
         if time_key in seen_times:
+            i += 1
             continue
         seen_times.add(time_key)
 
-        chunk = segments[i + 1] if i + 1 < len(segments) else ''
-        chunk = re.sub(r'[-–]\s*[-–]\s*\d+[-–]\d+\s*minutes?', '', chunk, flags=re.IGNORECASE).strip()
-
-        if any(s in chunk.lower() for s in SKIP_CONTAINS):
+        # Skip end times like "8:31PM (end)"
+        if rest.startswith('(end)') or rest.startswith('('):
+            i += 1
             continue
 
-        # Match known role at start of chunk
+        # Remove duration patterns
+        rest = re.sub(r'[-–]\s*[-–]\s*\d+[-–]\d+\s*minutes?', '', rest, flags=re.IGNORECASE).strip()
+
+        # Stop at attending section in rest
+        if any(s in rest.lower() for s in ['attending:', 'not attending:', 'meeting notes']):
+            stop_parsing = True
+            break
+
+        # Skip descriptions
+        if any(s in rest.lower() for s in SKIP_CONTAINS):
+            i += 1
+            continue
+
+        # Try to match known role at start
         role_raw = None
         member_raw = None
-        m = KNOWN_ROLE_RE.match(chunk)
+
+        m = KNOWN_ROLE_RE.match(rest)
         if m:
             role_raw = m.group(1).strip()
-            member_raw = chunk[m.end():].strip()
-            # member_raw might start with another time — strip it
-            member_raw = TIME_RE.split(member_raw)[0].strip()
+            member_raw = rest[m.end():].strip()
         else:
-            # Fallback: try to split on capitalized name pattern
-            nm = re.match(r'^(.+?)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z.\']+)+.*?)(?:\s+\d{1,2}:\d{2}|$)', chunk)
+            # Fallback split
+            nm = re.match(r'^(.+?)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z.\']+)+.*?)$', rest)
             if nm:
                 role_raw = nm.group(1)
                 member_raw = nm.group(2)
             else:
-                role_raw = chunk
+                role_raw = rest
+                member_raw = None
+
+        # If no member found on this line, check next non-description line
+        if not member_raw or not member_raw.strip() or member_raw.strip() in ('-', '–', '—'):
+            # Look ahead for member name on next line
+            j = i + 1
+            while j < len(lines):
+                next_line = lines[j].strip()
+                # Stop if next line starts with a time (new role entry)
+                if re.match(r'^\d{1,2}:\d{2}(?:AM|PM)', next_line, re.IGNORECASE):
+                    break
+                # Skip description lines
+                if any(s in next_line.lower() for s in SKIP_CONTAINS):
+                    j += 1
+                    continue
+                # Skip path/project lines
+                if re.match(r'^(Path|Project Title|Evaluates|Impromptu|https://)', next_line, re.IGNORECASE):
+                    j += 1
+                    continue
+                # Stop at attending
+                if re.match(r'^(Attending:|Not Attending:)', next_line, re.IGNORECASE):
+                    break
+                # This looks like a member name
+                candidate = clean_name(next_line)
+                if candidate and len(candidate.split()) >= 2:
+                    member_raw = next_line
+                    break
+                j += 1
 
         nr = normalize_role(role_raw)
         if nr is None:
+            i += 1
             continue
 
         mc = clean_name(member_raw) if member_raw else None
-        if mc and mc not in ('-', ''):
+        if mc:
             roles.append({'role': nr, 'member': mc})
+
+        i += 1
 
     # Parse Meeting Notes for Table Topics Speakers, Mentors, etc.
     notes_block = re.search(r'Meeting Notes?:(.*?)(?:https://|$)', text, re.DOTALL | re.IGNORECASE)

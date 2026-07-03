@@ -467,6 +467,53 @@
     border-radius: 4px;
     margin-left: 8px;
   }
+  .clickable-card:hover { background: #fafafa; border-color: var(--navy); }
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .modal-header h3 { font-size: 1rem; font-weight: 600; }
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 0;
+  }
+  .modal-close:hover { color: var(--text-primary); }
+  .modal-member-list { list-style: none; }
+  .modal-member-list li {
+    padding: 6px 0;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .modal-member-list li:last-child { border-bottom: none; }
+  .modal-member-list li::before { content: "○"; color: var(--text-muted); font-size: 0.7rem; }
 </style>
 </head>
 <body>
@@ -603,6 +650,17 @@
   </div>
 </main>
 
+<!-- Not Yet Participated Modal -->
+<div class="modal-overlay" id="not-participated-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">Not yet participated</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <ul class="modal-member-list" id="modal-member-list"></ul>
+  </div>
+</div>
+
 <script>
 let DATA = null;
 let currentMember = null;
@@ -706,6 +764,8 @@ function showTab(tab) {
 
 function normalizeRole(rawRole) {
   if (!rawRole) return null;
+  // Handle special cases
+  if (/new member ice breaker/i.test(rawRole)) return 'Speaker';
   const aliases = DATA.roleAliases || {};
   for (const [key, val] of Object.entries(aliases)) {
     if (key.toLowerCase() === rawRole.toLowerCase()) return val;
@@ -880,12 +940,30 @@ function buildOverview() {
   const avgRoles = members.length > 0 ? Math.round(totalRoles / members.length) : 0;
   const maxRoles = Math.max(...Object.values(overviewStats).map(s => s.totalRoles));
 
+  // Speakers count
+  const totalSpeakers = Object.values(overviewStats).reduce((a,s) => a + (s.roleCounts['Speaker'] || 0), 0);
+  
+  // Most active member
+  const mostActiveEntry = Object.values(overviewStats).sort((a,b) => b.totalRoles - a.totalRoles)[0];
+  const mostActiveName = mostActiveEntry ? mostActiveEntry.name.split(' ')[0] + ' ' + mostActiveEntry.name.split(' ').pop() : '—';
+  const mostActiveCount = mostActiveEntry ? mostActiveEntry.totalRoles : 0;
+
+  // Not yet participated
+  const notParticipated = Object.values(overviewStats).filter(s => s.totalRoles === 0);
+  const notParticipatedCount = notParticipated.length;
+  const notParticipatedNames = notParticipated.map(s => s.name).join('\n');
+
   document.getElementById('overview-stats').innerHTML = `
     <div class="stat-card"><div class="label">Members</div><div class="value">${members.length}</div></div>
     <div class="stat-card"><div class="label">Meetings</div><div class="value">${totalMeetings}</div></div>
-    <div class="stat-card"><div class="label">Role fills</div><div class="value">${totalRoles}</div></div>
+    <div class="stat-card"><div class="label">Speakers</div><div class="value">${totalSpeakers}</div><div class="sub">speeches given</div></div>
     <div class="stat-card"><div class="label">Avg roles / member</div><div class="value">${avgRoles}</div></div>
-    <div class="stat-card"><div class="label">Most active</div><div class="value" style="font-size:1.1rem">${maxRoles}</div><div class="sub">role fills</div></div>
+    <div class="stat-card"><div class="label">Most active</div><div class="value" style="font-size:1.1rem">${mostActiveCount}</div><div class="sub">${mostActiveName}</div></div>
+    <div class="stat-card clickable-card" onclick="showNotParticipated()" style="cursor:pointer" title="Click to see members">
+      <div class="label">Not yet participated</div>
+      <div class="value" style="color:${notParticipatedCount > 0 ? 'var(--maroon)' : 'var(--green)'}">${notParticipatedCount}</div>
+      <div class="sub">click to view</div>
+    </div>
   `;
 
   const ROLE_ORDER = [
@@ -1175,6 +1253,27 @@ function buildMeetings() {
       </div>
     `;
   }).join('');
+}
+
+function showNotParticipated() {
+  if (!overviewStats) return;
+  const notParticipated = Object.values(overviewStats)
+    .filter(s => s.totalRoles === 0)
+    .sort((a,b) => a.name.localeCompare(b.name));
+  
+  const yearLabel = selectedYear === 'all' ? 'All years' : selectedYear;
+  document.getElementById('modal-title').textContent = 
+    `Not yet participated — ${yearLabel} (${notParticipated.length})`;
+  
+  document.getElementById('modal-member-list').innerHTML = notParticipated.length === 0
+    ? '<li style="color:var(--green)">All members have participated! 🎉</li>'
+    : notParticipated.map(s => `<li>${s.name}</li>`).join('');
+  
+  document.getElementById('not-participated-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('not-participated-modal').classList.remove('open');
 }
 
 loadData();

@@ -607,7 +607,7 @@
 let DATA = null;
 let currentMember = null;
 let activeTab = 'overview';
-let selectedYear = 'current'; // 'all' or 'YYYY-YYYY' e.g. '2025-2026'
+let selectedYear = 'all'; // 'all' or 'YYYY-YYYY' e.g. '2025-2026'
 
 function getTMYear(dateStr) {
   // TM year runs July 1 - June 30
@@ -621,12 +621,17 @@ function getTMYear(dateStr) {
 }
 
 function getMeetingsForYear(year) {
-  if (!year || year === 'all') return DATA.meetings;
-  return DATA.meetings.filter(m => getTMYear(m.date) === year);
+  if (!year || year === 'all' || year === 'current') return DATA.meetings;
+  const filtered = DATA.meetings.filter(m => getTMYear(m.date) === year);
+  // If filter returns nothing (bad year value), fall back to all
+  return filtered.length > 0 ? filtered : DATA.meetings;
 }
 
 function onYearChange() {
   selectedYear = document.getElementById('year-select').value;
+  console.log('Year changed to:', selectedYear);
+  const filtered = getMeetingsForYear(selectedYear);
+  console.log('Filtered meetings:', filtered.length);
   overviewStats = null; // force recalc
   buildOverview();
   buildMemberList();
@@ -870,7 +875,7 @@ let overviewStats = null;
 function buildOverview() {
   overviewStats = getMemberStats();
   const members = DATA.members.filter(m => m.active);
-  const totalMeetings = DATA.meetings.length;
+  const totalMeetings = getMeetingsForYear(selectedYear).length;
   const totalRoles = Object.values(overviewStats).reduce((a,s) => a + s.totalRoles, 0);
   const avgRoles = members.length > 0 ? Math.round(totalRoles / members.length) : 0;
   const maxRoles = Math.max(...Object.values(overviewStats).map(s => s.totalRoles));

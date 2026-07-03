@@ -256,36 +256,6 @@
       "name": "Karen Morway-Adams",
       "active": true,
       "manualRoles": []
-    },
-    {
-      "name": "PLEASE SET A 15-MINUTE TIMER",
-      "active": true,
-      "manualRoles": []
-    },
-    {
-      "name": "PLEASE SET A TWO-MINUTE TIMER AND DISPLAY THE RED CARD",
-      "active": true,
-      "manualRoles": []
-    },
-    {
-      "name": "5-minute intermission for judges.",
-      "active": true,
-      "manualRoles": []
-    },
-    {
-      "name": "MAY I HAVE THE EVALUATION SPEECH CONTEST CONTESTANTS",
-      "active": true,
-      "manualRoles": []
-    },
-    {
-      "name": "Leads Chief Judge and Ballot Counters to private room to tally votes.",
-      "active": true,
-      "manualRoles": []
-    },
-    {
-      "name": "Stefano McGhee, IPE",
-      "active": true,
-      "manualRoles": []
     }
   ],
   "meetings": [
@@ -462,80 +432,24 @@
       "notAttending": [],
       "roles": [
         {
-          "role": "Speech",
-          "member": "Lisa Walker"
-        },
-        {
-          "role": "Contest",
-          "member": "Margaret O'Connor"
-        },
-        {
-          "role": "Contest Timer #1 -",
-          "member": "PLEASE SET A 15-MINUTE TIMER"
-        },
-        {
-          "role": "Contest",
-          "member": "Margaret O'Connor"
-        },
-        {
-          "role": "International",
+          "role": "Speaker",
           "member": "Angela Nuss"
         },
         {
-          "role": "Contest Timer #1 -",
-          "member": "PLEASE SET A TWO-MINUTE TIMER AND DISPLAY THE RED CARD"
-        },
-        {
-          "role": "Intermission -",
-          "member": "5-minute intermission for judges."
-        },
-        {
-          "role": "Contest",
-          "member": "Margaret O'Connor"
-        },
-        {
-          "role": "Test Speaker for",
+          "role": "Speaker",
           "member": "Jennifer McGhee"
         },
         {
-          "role": "Contest Timer #1 -",
-          "member": "PLEASE SET A TWO-MINUTE TIMER AND DISPLAY THE RED CARD"
-        },
-        {
-          "role": "Sergeant of Arms -",
-          "member": "MAY I HAVE THE EVALUATION SPEECH CONTEST CONTESTANTS"
-        },
-        {
-          "role": "Contest",
-          "member": "Margaret O'Connor"
-        },
-        {
-          "role": "Evaluation",
+          "role": "Evaluator",
           "member": "Angela Nuss"
         },
         {
-          "role": "Contest Timer #1 -",
-          "member": "PLEASE SET A TWO-MINUTE TIMER AND DISPLAY THE RED CARD"
-        },
-        {
-          "role": "Evaluation",
+          "role": "Evaluator",
           "member": "Christopher Dixon"
         },
         {
-          "role": "Contest Timer #1 -",
-          "member": "PLEASE SET A TWO-MINUTE TIMER AND DISPLAY THE RED CARD"
-        },
-        {
-          "role": "Evaluation",
+          "role": "Evaluator",
           "member": "Michele Chamberlain"
-        },
-        {
-          "role": "Contest Timer #1 -",
-          "member": "PLEASE SET A TWO-MINUTE TIMER AND DISPLAY THE RED CARD"
-        },
-        {
-          "role": "Sergeant in Arms -",
-          "member": "Leads Chief Judge and Ballot Counters to private room to tally votes."
         }
       ]
     },
@@ -656,19 +570,19 @@
           "member": "Lisa M. Axios"
         },
         {
-          "role": "Successful",
+          "role": "Speaker",
           "member": "Jennifer McGhee"
         },
         {
-          "role": "New",
+          "role": "Speaker",
           "member": "Lisa Walker"
         },
         {
-          "role": "New",
+          "role": "Speaker",
           "member": "Karen Morway-Adams"
         },
         {
-          "role": "New",
+          "role": "Speaker",
           "member": "Lyla Bakhit"
         },
         {

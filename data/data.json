@@ -33,61 +33,711 @@
   },
   "levelRequirements": {
     "1": {
-      "required": ["Table Topics Speaker", "Evaluator"],
-      "oneOf": [["Timer", "Grammarian"]],
+      "required": [
+        "Table Topics Speaker",
+        "Evaluator"
+      ],
+      "oneOf": [
+        [
+          "Timer",
+          "Grammarian"
+        ]
+      ],
       "notes": "Table Topics Speaker must be completed BEFORE Ice Breaker speech"
     },
     "2": {
-      "required": ["Grammarian", "Table Topics Master", "Evaluator"],
-      "oneOf": [["Toastmaster", "Timer", "Grammarian"]],
+      "required": [
+        "Grammarian",
+        "Table Topics Master",
+        "Evaluator"
+      ],
+      "oneOf": [
+        [
+          "Toastmaster",
+          "Timer",
+          "Grammarian"
+        ]
+      ],
       "notes": ""
     },
     "3": {
-      "required": ["Toastmaster", "Evaluator"],
-      "oneOf": [["Table Topics Master", "Table Topics Speaker", "Introductory Mentor"]],
+      "required": [
+        "Toastmaster",
+        "Evaluator"
+      ],
+      "oneOf": [
+        [
+          "Table Topics Master",
+          "Table Topics Speaker",
+          "Introductory Mentor"
+        ]
+      ],
       "notes": ""
     },
     "4": {
-      "required": ["Toastmaster", "General Evaluator", "Evaluator"],
-      "oneOf": [["Table Topics Speaker", "Table Topics Master", "Specialized Role"]],
+      "required": [
+        "Toastmaster",
+        "General Evaluator",
+        "Evaluator"
+      ],
+      "oneOf": [
+        [
+          "Table Topics Speaker",
+          "Table Topics Master",
+          "Specialized Role"
+        ]
+      ],
       "notes": "May also repeat a role listed above for the elective slot"
     },
     "5": {
-      "required": ["General Evaluator", "General Evaluator", "Toastmaster", "Toastmaster", "Evaluator", "Evaluator"],
-      "oneOf": [["Table Topics Speaker", "Table Topics Master", "Grammarian", "Timer", "Club Mentor", "Specialized Role"]],
+      "required": [
+        "General Evaluator",
+        "General Evaluator",
+        "Toastmaster",
+        "Toastmaster",
+        "Evaluator",
+        "Evaluator"
+      ],
+      "oneOf": [
+        [
+          "Table Topics Speaker",
+          "Table Topics Master",
+          "Grammarian",
+          "Timer",
+          "Club Mentor",
+          "Specialized Role"
+        ]
+      ],
       "notes": "Roles used for lower levels do not count toward Level 5 twice requirements."
     }
   },
   "members": [
-    {"name": "Allison Pelton", "active": true, "manualRoles": []},
-    {"name": "Amanda Stanton", "active": true, "manualRoles": []},
-    {"name": "Angela Nuss", "active": true, "manualRoles": []},
-    {"name": "Chris Walsh", "active": true, "manualRoles": []},
-    {"name": "Christopher Dixon", "active": true, "manualRoles": []},
-    {"name": "Daniel J. Wallace", "active": true, "manualRoles": []},
-    {"name": "Glenn Fernandes", "active": true, "manualRoles": []},
-    {"name": "Gregory Dzialo", "active": true, "manualRoles": []},
-    {"name": "Helen E. Long", "active": true, "manualRoles": []},
-    {"name": "Ifeany Gusiora", "active": true, "manualRoles": []},
-    {"name": "Ilidio Cardoso", "active": true, "manualRoles": []},
-    {"name": "Jennifer McGhee", "active": true, "manualRoles": []},
-    {"name": "Karen Morway Adams", "active": true, "manualRoles": []},
-    {"name": "Katherine Heatley", "active": true, "manualRoles": []},
-    {"name": "Lisa M. Axios", "active": true, "manualRoles": []},
-    {"name": "Lisa Walker", "active": true, "manualRoles": []},
-    {"name": "Lyla Bakhit", "active": true, "manualRoles": []},
-    {"name": "Margaret O'Connor", "active": true, "manualRoles": []},
-    {"name": "Mark R. Rinker", "active": true, "manualRoles": []},
-    {"name": "Mary Ahlfeld", "active": true, "manualRoles": []},
-    {"name": "Maureen DeRoma", "active": true, "manualRoles": []},
-    {"name": "Michael Carlton", "active": true, "manualRoles": []},
-    {"name": "Michele Chamberlain", "active": true, "manualRoles": []},
-    {"name": "Michele O'Connor", "active": true, "manualRoles": []},
-    {"name": "Renate S. Devin", "active": true, "manualRoles": []},
-    {"name": "Sarah Lundrigan", "active": true, "manualRoles": []},
-    {"name": "Stefano S. McGhee", "active": true, "manualRoles": []},
-    {"name": "Taina Chatelain", "active": true, "manualRoles": []},
-    {"name": "Unkinou Her", "active": true, "manualRoles": []}
+    {
+      "name": "Allison Pelton",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Amanda Stanton",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Angela Nuss",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Chris Walsh",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Christopher Dixon",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Daniel J. Wallace",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Glenn Fernandes",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Gregory Dzialo",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Helen E. Long",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Ifeany Gusiora",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Ilidio Cardoso",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Jennifer McGhee",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Karen Morway Adams",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Katherine Heatley",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Lisa M. Axios",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Lisa Walker",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Lyla Bakhit",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Margaret O'Connor",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Mark R. Rinker",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Mary Ahlfeld",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Maureen DeRoma",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Michael Carlton",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Michele Chamberlain",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Michele O'Connor",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Renate S. Devin",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Sarah Lundrigan",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Stefano S. McGhee",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Taina Chatelain",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Unkinou Her",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Karen Morway-Adams",
+      "active": true,
+      "manualRoles": []
+    }
   ],
-  "meetings": []
+  "meetings": [
+    {
+      "date": "2026-04-01",
+      "title": "April 1, 2026",
+      "attending": [
+        "Allison Pelton",
+        "Amanda Stanton",
+        "Angela Nuss",
+        "Daniel J. Wallace",
+        "Glenn Fernandes",
+        "Jennifer McGhee",
+        "Lisa M. Axios",
+        "Margaret O'Connor",
+        "Mark R. Rinker"
+      ],
+      "notAttending": [
+        "Christopher Dixon",
+        "Renate S. Devin"
+      ],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Karen Morway-Adams"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "Timer",
+          "member": "Mary Ahlfeld"
+        },
+        {
+          "role": "New",
+          "member": "Allison Pelton"
+        },
+        {
+          "role": "Speaker",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "Speaker",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Michael Carlton"
+        }
+      ]
+    },
+    {
+      "date": "2026-04-15",
+      "title": "April 15, 2026",
+      "attending": [
+        "Allison Pelton",
+        "Amanda Stanton",
+        "Angela Nuss",
+        "Daniel J. Wallace",
+        "Jennifer McGhee",
+        "Lisa M. Axios",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Mary Ahlfeld",
+        "Maureen DeRoma",
+        "Michele O'Connor",
+        "Renate S. Devin"
+      ],
+      "notAttending": [
+        "Christopher Dixon"
+      ],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Allison Pelton"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Renate S. Devin"
+        },
+        {
+          "role": "Timer",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Speaker",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "Speaker",
+          "member": "Mary Ahlfeld"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Michele O'Connor"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Daniel J. Wallace"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-06",
+      "title": "May 6, 2026",
+      "attending": [
+        "Amanda Stanton",
+        "Angela Nuss",
+        "Daniel J. Wallace",
+        "Helen E. Long",
+        "Jennifer McGhee",
+        "Lisa M. Axios",
+        "Lisa Walker",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Maureen DeRoma",
+        "Michele Chamberlain",
+        "Michele O'Connor",
+        "Renate S. Devin"
+      ],
+      "notAttending": [],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Renate S. Devin"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Timer",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "Speaker",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "Speaker",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Speaker",
+          "member": "Michele O'Connor"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Helen E. Long"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Mary Ahlfeld"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Lisa M. Axios"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-20",
+      "title": "May 20, 2026",
+      "attending": [
+        "Angela Nuss",
+        "Daniel J. Wallace",
+        "Glenn Fernandes",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Maureen DeRoma",
+        "Michele Chamberlain"
+      ],
+      "notAttending": [
+        "Jennifer McGhee"
+      ],
+      "roles": [
+        {
+          "role": "Toastmaster",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Timer",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Speaker",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Speaker",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Daniel J. Wallace"
+        }
+      ]
+    },
+    {
+      "date": "2026-06-03",
+      "title": "June 3, 2026",
+      "attending": [
+        "Angela Nuss",
+        "Daniel J. Wallace",
+        "Glenn Fernandes",
+        "Lisa Walker",
+        "Mark R. Rinker",
+        "Maureen DeRoma",
+        "Michele Chamberlain",
+        "Michele O'Connor",
+        "Renate S. Devin"
+      ],
+      "notAttending": [
+        "Christopher Dixon",
+        "Jennifer McGhee",
+        "Margaret O'Connor",
+        "Unkinou Her"
+      ],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Michele O'Connor"
+        },
+        {
+          "role": "Timer",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Speaker",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Speaker",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Renate S. Devin"
+        }
+      ]
+    },
+    {
+      "date": "2026-06-17",
+      "title": "June 17, 2026",
+      "attending": [
+        "Angela Nuss",
+        "Daniel J. Wallace",
+        "Helen E. Long",
+        "Lisa M. Axios",
+        "Lisa Walker",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Maureen DeRoma",
+        "Michele Chamberlain"
+      ],
+      "notAttending": [
+        "Amanda Stanton",
+        "Glenn Fernandes",
+        "Unkinou Her"
+      ],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Speaker",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Speaker",
+          "member": "Helen E. Long"
+        },
+        {
+          "role": "Speaker",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Daniel J. Wallace"
+        }
+      ]
+    },
+    {
+      "date": "2026-07-01",
+      "title": "July 1, 2026",
+      "attending": [
+        "Amanda Stanton",
+        "Angela Nuss",
+        "Daniel J. Wallace",
+        "Helen E. Long",
+        "Jennifer McGhee",
+        "Lisa M. Axios",
+        "Lisa Walker",
+        "Mark R. Rinker",
+        "Maureen DeRoma",
+        "Renate S. Devin",
+        "Unkinou Her"
+      ],
+      "notAttending": [
+        "Allison Pelton",
+        "Christopher Dixon",
+        "Chris Walsh",
+        "Gregory Dzialo",
+        "Karen Morway-Adams",
+        "Katherine Heatley",
+        "Lyla Bakhit",
+        "Margaret O'Connor",
+        "Michael Carlton"
+      ],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Helen E. Long"
+        },
+        {
+          "role": "Timer",
+          "member": "Renate S. Devin"
+        },
+        {
+          "role": "Speaker",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "Speaker",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Angela Nuss"
+        }
+      ]
+    }
+  ]
 }

@@ -256,9 +256,464 @@
       "name": "Karen Morway-Adams",
       "active": true,
       "manualRoles": []
+    },
+    {
+      "name": "Education Chris Dixon",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "(Former Member)",
+      "active": true,
+      "manualRoles": []
     }
   ],
   "meetings": [
+    {
+      "date": "2025-07-09",
+      "title": "July 9, 2025",
+      "attending": [
+        "Amanda Stanton",
+        "Angela Nuss",
+        "Christopher Dixon",
+        "Chris Walsh",
+        "Daniel J. Wallace",
+        "Jennifer McGhee",
+        "Lisa M. Axios",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Mary Ahlfeld",
+        "Maureen DeRoma"
+      ],
+      "notAttending": [],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Stefano S. McGhee"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Timer",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Speaker",
+          "member": "Christopher Dixon"
+        },
+        {
+          "role": "Speaker",
+          "member": "Chris Walsh"
+        },
+        {
+          "role": "Speaker",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Renate S. Devin"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Margaret O'Connor"
+        }
+      ]
+    },
+    {
+      "date": "2025-07-16",
+      "title": "July 16, 2025",
+      "attending": [
+        "Amanda Stanton",
+        "Angela Nuss",
+        "Christopher Dixon",
+        "Chris Walsh",
+        "Daniel J. Wallace",
+        "Glenn Fernandes",
+        "Jennifer McGhee",
+        "Lisa M. Axios",
+        "Margaret O'Connor",
+        "Mark R. Rinker"
+      ],
+      "notAttending": [],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Christopher Dixon"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Timer",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "Speaker",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "Speaker",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Speaker",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Renate S. Devin"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Chris Walsh"
+        }
+      ]
+    },
+    {
+      "date": "2025-08-06",
+      "title": "August 6, 2025",
+      "attending": [
+        "Amanda Stanton",
+        "Angela Nuss",
+        "Christopher Dixon",
+        "Daniel J. Wallace",
+        "Glenn Fernandes",
+        "Jennifer McGhee",
+        "Lisa M. Axios",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Maureen DeRoma"
+      ],
+      "notAttending": [],
+      "roles": [
+        {
+          "role": "Membership Goals - VP",
+          "member": "Education Chris Dixon"
+        },
+        {
+          "role": "Thought of the day",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "Timer",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Speaker",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "Speaker",
+          "member": "Renate S. Devin"
+        },
+        {
+          "role": "Speaker",
+          "member": "(Former Member)"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Daniel J. Wallace"
+        }
+      ]
+    },
+    {
+      "date": "2025-08-20",
+      "title": "August 20, 2025",
+      "attending": [
+        "Angela Nuss",
+        "Christopher Dixon",
+        "Daniel J. Wallace",
+        "Lisa M. Axios",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Mary Ahlfeld",
+        "Maureen DeRoma",
+        "Michele Chamberlain"
+      ],
+      "notAttending": [
+        "Amanda Stanton",
+        "Renate S. Devin"
+      ],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Mary Ahlfeld"
+        },
+        {
+          "role": "Timer",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Speaker",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Speaker",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Taina Chatelain"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Maureen DeRoma"
+        }
+      ]
+    },
+    {
+      "date": "2025-09-03",
+      "title": "September 3, 2025",
+      "attending": [
+        "Amanda Stanton",
+        "Angela Nuss",
+        "Christopher Dixon",
+        "Chris Walsh",
+        "Daniel J. Wallace",
+        "Glenn Fernandes",
+        "Jennifer McGhee",
+        "Lisa M. Axios",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Mary Ahlfeld",
+        "Maureen DeRoma",
+        "Michele Chamberlain",
+        "Taina Chatelain"
+      ],
+      "notAttending": [
+        "Renate S. Devin"
+      ],
+      "roles": [
+        {
+          "role": "2024-2025 TOASTMASTER (FILL THE ROLES) AWARDS",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Thought of the day",
+          "member": "Mary Ahlfeld"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Taina Chatelain"
+        },
+        {
+          "role": "Timer",
+          "member": "Christopher Dixon"
+        },
+        {
+          "role": "Speaker",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Speaker",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "Speaker",
+          "member": "Mary Ahlfeld"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Chris Walsh"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Jennifer McGhee"
+        }
+      ]
+    },
+    {
+      "date": "2025-09-17",
+      "title": "September 17, 2025",
+      "attending": [
+        "Angela Nuss",
+        "Christopher Dixon",
+        "Chris Walsh",
+        "Daniel J. Wallace",
+        "Glenn Fernandes",
+        "Jennifer McGhee",
+        "Lisa M. Axios",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Mary Ahlfeld"
+      ],
+      "notAttending": [
+        "Amanda Stanton"
+      ],
+      "roles": [
+        {
+          "role": "New",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Thought of the day",
+          "member": "Chris Walsh"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Stefano S. McGhee"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Renate S. Devin"
+        },
+        {
+          "role": "Timer",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Speaker",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Speaker",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Speaker",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Mary Ahlfeld"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Glenn Fernandes"
+        }
+      ]
+    },
     {
       "date": "2026-01-07",
       "title": "January 7, 2026",

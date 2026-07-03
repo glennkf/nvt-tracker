@@ -474,11 +474,10 @@
 <header>
   <div class="header-left">
     <h1>Network Voice Toastmasters</h1>
-    <p id="header-sub">Role Tracker</p>
+    <p>Role Tracker</p>
   </div>
   <div class="header-right">
     <span class="tm-badge">District 31</span>
-    <span id="year-badge" class="tm-badge" style="background: rgba(255,255,255,0.15)"></span>
   </div>
 </header>
 
@@ -683,8 +682,6 @@ async function loadData() {
 function init() {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  document.getElementById('year-badge').textContent = DATA.club.tmYear;
-  document.getElementById('header-sub').textContent = 'Role Tracker — ' + DATA.club.tmYear;
   populateYearSelect();
   buildOverview();
   buildMemberList();
@@ -875,11 +872,10 @@ function buildOverview() {
   const avgRoles = members.length > 0 ? Math.round(totalRoles / members.length) : 0;
   const maxRoles = Math.max(...Object.values(overviewStats).map(s => s.totalRoles));
 
-  const yearLabel = selectedYear === 'all' ? 'All years' : selectedYear;
   document.getElementById('overview-stats').innerHTML = `
     <div class="stat-card"><div class="label">Members</div><div class="value">${members.length}</div></div>
-    <div class="stat-card"><div class="label">Meetings<span class="year-indicator">${yearLabel}</span></div><div class="value">${totalMeetings}</div></div>
-    <div class="stat-card"><div class="label">Role fills<span class="year-indicator">${yearLabel}</span></div><div class="value">${totalRoles}</div></div>
+    <div class="stat-card"><div class="label">Meetings</div><div class="value">${totalMeetings}</div></div>
+    <div class="stat-card"><div class="label">Role fills</div><div class="value">${totalRoles}</div></div>
     <div class="stat-card"><div class="label">Avg roles / member</div><div class="value">${avgRoles}</div></div>
     <div class="stat-card"><div class="label">Most active</div><div class="value" style="font-size:1.1rem">${maxRoles}</div><div class="sub">role fills</div></div>
   `;

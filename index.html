@@ -1137,7 +1137,7 @@ function renderOverviewTable() {
 
   tbody.innerHTML = members.map(s => `
     <tr style="cursor:pointer" onclick="showMemberDetail('${s.name.replace(/'/g,"\\'")}')">
-      <td class="member-name" style="min-width:110px;text-align:left;padding:7px 8px">${s.name}</td>
+      <td class="member-name" style="min-width:110px;text-align:left;padding:7px 8px">${s.name}${hasFTR(s) ? ' <span title="Fill the Roles achiever" style="font-size:0.85rem">🏆</span>' : ''}</td>
       <td style="text-align:center;width:32px"><span class="count-badge ${s.totalRoles === 0 ? 'zero' : s.totalRoles >= maxTotal * 0.7 ? 'high' : ''}">${s.totalRoles}</span></td>
       <td style="text-align:center;width:32px"><span class="count-badge ${s.distinctRolesCount === 0 ? 'zero' : ''}">${s.distinctRolesCount}</span></td>
       <td class="att-col" style="width:36px">
@@ -1311,7 +1311,7 @@ function renderLevelsTable() {
 
     return `
       <tr style="cursor:pointer" onclick="showMemberDetail('${s.name.replace(/'/g,"\\'")}')">
-        <td class="member-name" style="color:var(--navy)">${s.name}${hasFTR(s) ? ' <span title="Fill the Roles achiever" style="font-size:0.85rem">🏆</span>' : ''}</td>
+        <td class="member-name" style="color:var(--navy)">${s.name}</td>
         ${levelCells}
         <td><span class="count-badge ${completedCount === 0 ? 'zero' : completedCount === 5 ? 'high' : ''}">${completedCount} / 5</span></td>
       </tr>

@@ -258,11 +258,6 @@
       "manualRoles": []
     },
     {
-      "name": "Education Chris Dixon",
-      "active": true,
-      "manualRoles": []
-    },
-    {
       "name": "(Former Member)",
       "active": true,
       "manualRoles": []
@@ -434,10 +429,6 @@
       "notAttending": [],
       "roles": [
         {
-          "role": "Membership Goals - VP",
-          "member": "Education Chris Dixon"
-        },
-        {
           "role": "Thought of the day",
           "member": "Jennifer McGhee"
         },
@@ -580,10 +571,6 @@
       ],
       "roles": [
         {
-          "role": "2024-2025 TOASTMASTER (FILL THE ROLES) AWARDS",
-          "member": "Angela Nuss"
-        },
-        {
           "role": "Thought of the day",
           "member": "Mary Ahlfeld"
         },
@@ -656,10 +643,6 @@
         "Amanda Stanton"
       ],
       "roles": [
-        {
-          "role": "New",
-          "member": "Michele Chamberlain"
-        },
         {
           "role": "Thought of the day",
           "member": "Chris Walsh"

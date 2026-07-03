@@ -88,18 +88,21 @@ def normalize_role(r):
 
 def find_member(name, members):
     if not name: return None
-    low = name.lower()
+    # Normalize hyphens to spaces for matching
+    low = name.lower().replace('-', ' ')
     for m in members:
-        if m['name'].lower() == low: return m['name']
-    parts = name.split()
+        mlow = m['name'].lower().replace('-', ' ')
+        if mlow == low: return m['name']
+    parts = low.split()
     for m in members:
-        mp = m['name'].split()
+        mp = m['name'].lower().replace('-', ' ').split()
         if (len(parts) >= 2 and len(mp) >= 2 and
-            mp[-1].lower() == parts[-1].lower() and
-            mp[0][0].lower() == parts[0][0].lower()):
+            mp[-1] == parts[-1] and
+            mp[0][0] == parts[0][0]):
             return m['name']
     for m in members:
-        if name.lower() in m['name'].lower() or m['name'].lower() in name.lower():
+        mlow = m['name'].lower().replace('-', ' ')
+        if low in mlow or mlow in low:
             return m['name']
     return None
 

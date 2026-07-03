@@ -42,6 +42,10 @@ ROLE_ALIASES = {
     'best speaker/evaluator': None, 'break': None,
     '(end) attending:': None, 'attending:': None,
     'not attending:': None,
+    'new member ice breaker speech #1': 'Speaker',
+    'new member ice breaker speech #2': 'Speaker',
+    'new member ice breaker speech #3': 'Speaker',
+    'new member ice breaker speech': 'Speaker',
 }
 
 SKIP_CONTAINS = [
@@ -72,12 +76,15 @@ def clean_name(raw):
     if '(guest)' in cleaned.lower(): return None
     return cleaned
 
-def normalize_role(r):
+def normalize_role(r, from_notes=False):
     if not r: return None
     r = r.replace('\\', '').strip()
     # Remove duration patterns like "- - 10-15 minutes"
     r = re.sub(r'[-–]\s*[-–]\s*\d+[-–]\d+\s*minutes?', '', r, flags=re.IGNORECASE).strip()
     low = r.lower()
+    # Table Topics Speaker as agenda role = Table Topics Master (not from Meeting Notes)
+    if low == 'table topics speaker' and not from_notes:
+        return 'Table Topics Master'
     for k, v in ROLE_ALIASES.items():
         if k == low: return v
     if any(s in low for s in SKIP_CONTAINS): return None
@@ -262,7 +269,7 @@ def parse_agenda_text(text, filename=''):
             for name in tt_m.group(1).split(','):
                 mc = clean_name(name.strip())
                 if mc:
-                    roles.append({'role': 'Table Topics Speaker', 'member': mc})
+                    roles.append({'role': normalize_role('Table Topics Speaker', from_notes=True), 'member': mc})
 
         # Introductory Mentor: Name
         im_m = re.search(r'Introductory Mentor:\s*(.+?)(?:\n|$)', notes, re.IGNORECASE)

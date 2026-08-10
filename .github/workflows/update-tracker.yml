@@ -1,9 +1,10 @@
 name: Update NVT Role Tracker
 
 on:
-  # Run automatically on 1st and 3rd Wednesday nights (after 8:45 PM ET meetings end)
+  # Run Wednesday nights (after 8:45 PM ET meetings end) and Friday nights (catches next-day corrections)
   schedule:
-    - cron: '0 2 * * 4'  # 2 AM UTC Thursday = 10 PM ET Wednesday (after meeting ends)
+    - cron: '0 2 * * 4'  # 2 AM UTC Thursday = 10 PM ET Wednesday
+    - cron: '0 5 * * 6'  # 5 AM UTC Saturday = 1 AM ET Friday night
   
   # Also allow manual trigger from GitHub Actions tab
   workflow_dispatch:

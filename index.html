@@ -231,6 +231,7 @@
     white-space: nowrap;
   }
   td.role-col { text-align: center; padding: 7px 2px; width: 32px; }
+  td.att-col { text-align: left; padding: 7px 4px; }
   td {
     padding: 9px 12px;
     border-bottom: 1px solid #f0f0f0;
@@ -578,6 +579,7 @@
                   <th>Member</th>
                   <th>Total roles</th>
                   <th>Distinct roles</th>
+                  <th>Meetings attended</th>
                   <th>Participation rate</th>
                   <th>Top role</th>
                 </tr>
@@ -779,7 +781,9 @@ function getMemberStats(meetingsOverride) {
       totalRoles: 0,
       distinctRoles: new Set(),
       roleCounts: {},
+      meetingsAttended: 0,
       meetingsTotal: meetings.length,
+      meetingsRolesFilled: 0,
       roleHistory: []
     };
   });
@@ -789,6 +793,7 @@ function getMemberStats(meetingsOverride) {
     attending.forEach(n => {
       const matched = matchMember(n);
       if (matched && stats[matched]) {
+        stats[matched].meetingsAttended++;
       }
     });
 
@@ -803,7 +808,9 @@ function getMemberStats(meetingsOverride) {
       s.roleCounts[normalized] = (s.roleCounts[normalized] || 0) + 1;
       s.roleHistory.push({ date: mtg.date, role: normalized, meeting: mtg.title });
       if (!attending.includes(cleanName(r.member))) {
+        s.meetingsAttended++;
       }
+      s.meetingsRolesFilled++;
     });
 
     DATA.members.forEach(m => {
@@ -825,6 +832,8 @@ function getMemberStats(meetingsOverride) {
 
   Object.values(stats).forEach(s => {
     s.distinctRolesCount = s.distinctRoles.size;
+    s.attendanceRate = s.meetingsTotal > 0 ? Math.round((s.meetingsAttended / s.meetingsTotal) * 100) : 0;
+    s.participationRate = s.meetingsAttended > 0 ? Math.round((s.meetingsRolesFilled / s.meetingsAttended) * 100) : 0;
     s.topRole = Object.entries(s.roleCounts).sort((a,b) => b[1]-a[1])[0]?.[0] || '—';
   });
 
@@ -1116,8 +1125,7 @@ function renderOverviewTable() {
       <td class="member-name" style="min-width:110px;text-align:left;padding:7px 8px">${s.name}${hasFTR(s) ? ' <span title="Fill the Roles achiever" style="font-size:0.85rem">🏆</span>' : ''}</td>
       <td style="text-align:center;width:32px"><span class="count-badge ${s.totalRoles === 0 ? 'zero' : s.totalRoles >= maxTotal * 0.7 ? 'high' : ''}">${s.totalRoles}</span></td>
       <td style="text-align:center;width:32px"><span class="count-badge ${s.distinctRolesCount === 0 ? 'zero' : ''}">${s.distinctRolesCount}</span></td>
-      <td class="att-col" style="width:36px">
-      </td>
+
       ${roleList.map(r => {
         const c = s.roleCounts[r] || 0;
         return `<td style="width:32px;text-align:center;padding:9px 2px">${c > 0 ? `<span class="count-badge" style="font-size:0.68rem;min-width:20px;padding:1px 4px">${c}</span>` : '<span style="color:var(--text-muted)">—</span>'}</td>`;
@@ -1144,8 +1152,6 @@ function renderMemberList() {
       <td class="member-name" style="color:var(--navy)">${s.name}${hasFTR(s) ? ' <span title="Fill the Roles achiever" style="font-size:0.85rem">🏆</span>' : ''}</td>
       <td><span class="count-badge ${s.totalRoles === 0 ? 'zero' : ''}">${s.totalRoles}</span></td>
       <td><span class="count-badge ${s.distinctRolesCount === 0 ? 'zero' : ''}">${s.distinctRolesCount}</span></td>
-      <td>
-      </td>
       <td><span class="role-pill">${s.topRole}</span></td>
     </tr>
   `).join('');

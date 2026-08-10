@@ -2031,6 +2031,168 @@
           "member": "Angela Nuss"
         }
       ]
+    },
+    {
+      "date": "2026-07-15",
+      "title": "July 15, 2026",
+      "attending": [
+        "Amanda Stanton",
+        "Angela Nuss",
+        "Daniel J. Wallace",
+        "Jennifer McGhee",
+        "Lisa M. Axios",
+        "Lisa Walker",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Maureen DeRoma",
+        "Michele Chamberlain",
+        "Michele O'Connor",
+        "Stefano S. McGhee",
+        "Unkinou Her"
+      ],
+      "notAttending": [],
+      "roles": [
+        {
+          "role": "New",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Officer",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Thought of the day",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Timer",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "New",
+          "member": "Unkinou Her"
+        },
+        {
+          "role": "Speaker",
+          "member": "Michele O'Connor"
+        },
+        {
+          "role": "Speaker",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "Speaker",
+          "member": "Stefano S. McGhee"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Stefano S. McGhee"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Jennifer McGhee"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-05",
+      "title": "August 5, 2026",
+      "attending": [
+        "Angela Nuss",
+        "Daniel J. Wallace",
+        "Glenn Fernandes",
+        "Helen E. Long",
+        "Jennifer McGhee",
+        "Lisa M. Axios",
+        "Lisa Walker",
+        "Margaret O'Connor",
+        "Mark R. Rinker",
+        "Maureen DeRoma",
+        "Unkinou Her"
+      ],
+      "notAttending": [],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Helen E. Long"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "Timer",
+          "member": "Michele O'Connor"
+        },
+        {
+          "role": "Speaker",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "Speaker",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Speaker",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Speaker",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Lisa Walker"
+        }
+      ]
     }
   ]
 }

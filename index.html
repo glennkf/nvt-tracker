@@ -805,10 +805,13 @@ function getMemberStats(meetingsOverride) {
       const matched = matchMember(cleanName(r.member));
       if (!matched || !stats[matched]) return;
       const s = stats[matched];
-      s.totalRoles++;
-      s.distinctRoles.add(normalized);
       s.roleCounts[normalized] = (s.roleCounts[normalized] || 0) + 1;
       s.roleHistory.push({ date: mtg.date, role: normalized, meeting: mtg.title });
+      // Total and Distinct only count the 9 core trackable roles
+      if (FTR_ROLES.includes(normalized)) {
+        s.totalRoles++;
+        s.distinctRoles.add(normalized);
+      }
       if (!attending.includes(cleanName(r.member))) {
         s.meetingsAttended++;
       }
@@ -823,10 +826,13 @@ function getMemberStats(meetingsOverride) {
           const mrYear = getTMYear(mr.date);
           if (selectedYear !== 'all' && mrYear && mrYear !== selectedYear) return;
           const s = stats[m.name];
-          s.totalRoles++;
-          s.distinctRoles.add(mr.role);
           s.roleCounts[mr.role] = (s.roleCounts[mr.role] || 0) + 1;
           s.roleHistory.push({ date: mr.date || '', role: mr.role, meeting: mr.meeting || 'Manual entry', manual: true });
+          // Total and Distinct only count the 9 core trackable roles
+          if (FTR_ROLES.includes(mr.role)) {
+            s.totalRoles++;
+            s.distinctRoles.add(mr.role);
+          }
         });
       }
     });
@@ -1060,11 +1066,8 @@ function buildOverview() {
     const n = normalizeRole(r.role);
     if (n) allRoles.add(n);
   }));
-  // Use fixed order, then append any unexpected roles at the end
-  const roleList = [
-    ...ROLE_ORDER.filter(r => allRoles.has(r)),
-    ...[...allRoles].filter(r => !ROLE_ORDER.includes(r)).sort()
-  ];
+  // Overview tab only tracks the 9 core Fill-the-Roles roles - nothing else
+  const roleList = ROLE_ORDER.filter(r => allRoles.has(r));
 
   const thead = document.getElementById('overview-thead');
   thead.innerHTML = `<tr>
@@ -1102,11 +1105,8 @@ function renderOverviewTable() {
     const n = normalizeRole(r.role);
     if (n) allRoles.add(n);
   }));
-  // Use fixed order, then append any unexpected roles at the end
-  const roleList = [
-    ...ROLE_ORDER.filter(r => allRoles.has(r)),
-    ...[...allRoles].filter(r => !ROLE_ORDER.includes(r)).sort()
-  ];
+  // Overview tab only tracks the 9 core Fill-the-Roles roles - nothing else
+  const roleList = ROLE_ORDER.filter(r => allRoles.has(r));
 
   let members = Object.values(overviewStats).filter(s => !search || s.name.toLowerCase().includes(search));
 

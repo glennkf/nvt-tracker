@@ -231,7 +231,6 @@
     white-space: nowrap;
   }
   td.role-col { text-align: center; padding: 7px 2px; width: 32px; }
-  td.att-col { text-align: left; padding: 7px 4px; }
   td {
     padding: 9px 12px;
     border-bottom: 1px solid #f0f0f0;
@@ -337,19 +336,7 @@
   .req-icon { flex-shrink: 0; margin-top: 1px; }
   .req-done { color: var(--green); font-weight: 500; }
   .req-count { font-size: 0.7rem; color: var(--text-muted); margin-left: auto; }
-  .attendance-bar {
-    height: 6px;
-    background: var(--mid-gray);
-    border-radius: 3px;
-    overflow: hidden;
-    margin-top: 4px;
-  }
-  .attendance-bar-fill {
-    height: 100%;
-    background: var(--navy);
-    border-radius: 3px;
-    transition: width 0.4s ease;
-  }
+
   .sort-arrow { font-size: 0.65rem; margin-left: 3px; }
   .filter-row {
     display: flex;
@@ -563,7 +550,6 @@
               <option value="total-desc">Sort: Most roles</option>
               <option value="total-asc">Sort: Fewest roles</option>
               <option value="distinct-desc">Sort: Most distinct</option>
-              <option value="attend-desc">Sort: Attendance</option>
             </select>
           </div>
         </div>
@@ -592,7 +578,6 @@
                   <th>Member</th>
                   <th>Total roles</th>
                   <th>Distinct roles</th>
-                  <th>Meetings attended</th>
                   <th>Participation rate</th>
                   <th>Top role</th>
                 </tr>
@@ -794,9 +779,7 @@ function getMemberStats(meetingsOverride) {
       totalRoles: 0,
       distinctRoles: new Set(),
       roleCounts: {},
-      meetingsAttended: 0,
       meetingsTotal: meetings.length,
-      meetingsRolesFilled: 0,
       roleHistory: []
     };
   });
@@ -806,7 +789,6 @@ function getMemberStats(meetingsOverride) {
     attending.forEach(n => {
       const matched = matchMember(n);
       if (matched && stats[matched]) {
-        stats[matched].meetingsAttended++;
       }
     });
 
@@ -821,9 +803,7 @@ function getMemberStats(meetingsOverride) {
       s.roleCounts[normalized] = (s.roleCounts[normalized] || 0) + 1;
       s.roleHistory.push({ date: mtg.date, role: normalized, meeting: mtg.title });
       if (!attending.includes(cleanName(r.member))) {
-        s.meetingsAttended++;
       }
-      s.meetingsRolesFilled++;
     });
 
     DATA.members.forEach(m => {
@@ -845,8 +825,6 @@ function getMemberStats(meetingsOverride) {
 
   Object.values(stats).forEach(s => {
     s.distinctRolesCount = s.distinctRoles.size;
-    s.attendanceRate = s.meetingsTotal > 0 ? Math.round((s.meetingsAttended / s.meetingsTotal) * 100) : 0;
-    s.participationRate = s.meetingsAttended > 0 ? Math.round((s.meetingsRolesFilled / s.meetingsAttended) * 100) : 0;
     s.topRole = Object.entries(s.roleCounts).sort((a,b) => b[1]-a[1])[0]?.[0] || '—';
   });
 
@@ -1082,7 +1060,6 @@ function buildOverview() {
     <th onclick="sortOverview('name')" style="width:22%;text-align:left;padding:6px 8px;vertical-align:bottom;white-space:nowrap">Member <span class="sort-arrow">↕</span></th>
     <th onclick="sortOverview('total-desc')" style="width:32px;min-width:32px;max-width:32px;padding:6px 2px;vertical-align:bottom"><span style="display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);font-size:0.68rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap">Total ↕</span></th>
     <th onclick="sortOverview('distinct-desc')" style="width:32px;min-width:32px;max-width:32px;padding:6px 2px;vertical-align:bottom"><span style="display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);font-size:0.68rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap">Distinct ↕</span></th>
-    <th onclick="sortOverview('attend-desc')" style="width:60px;min-width:60px;max-width:60px;padding:6px 4px;vertical-align:bottom;text-align:left"><span style="display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);font-size:0.68rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap">Attended ↕</span></th>
     ${roleList.map(r => `<th style="width:32px;min-width:32px;max-width:32px;padding:6px 2px;vertical-align:bottom;text-align:center"><span style="display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);font-size:0.68rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap">${r}</span></th>`).join('')}
   </tr>`;
 
@@ -1126,7 +1103,6 @@ function renderOverviewTable() {
   else if (sort === 'total-desc') members.sort((a,b) => b.totalRoles - a.totalRoles);
   else if (sort === 'total-asc') members.sort((a,b) => a.totalRoles - b.totalRoles);
   else if (sort === 'distinct-desc') members.sort((a,b) => b.distinctRolesCount - a.distinctRolesCount);
-  else if (sort === 'attend-desc') members.sort((a,b) => b.meetingsAttended - a.meetingsAttended);
 
   const tbody = document.getElementById('overview-tbody');
   if (members.length === 0) {
@@ -1141,8 +1117,6 @@ function renderOverviewTable() {
       <td style="text-align:center;width:32px"><span class="count-badge ${s.totalRoles === 0 ? 'zero' : s.totalRoles >= maxTotal * 0.7 ? 'high' : ''}">${s.totalRoles}</span></td>
       <td style="text-align:center;width:32px"><span class="count-badge ${s.distinctRolesCount === 0 ? 'zero' : ''}">${s.distinctRolesCount}</span></td>
       <td class="att-col" style="width:36px">
-        <span style="font-size:0.72rem">${s.meetingsAttended}/${s.meetingsTotal}</span>
-        <div class="attendance-bar" style="width:28px"><div class="attendance-bar-fill" style="width:${s.attendanceRate}%"></div></div>
       </td>
       ${roleList.map(r => {
         const c = s.roleCounts[r] || 0;
@@ -1170,10 +1144,7 @@ function renderMemberList() {
       <td class="member-name" style="color:var(--navy)">${s.name}${hasFTR(s) ? ' <span title="Fill the Roles achiever" style="font-size:0.85rem">🏆</span>' : ''}</td>
       <td><span class="count-badge ${s.totalRoles === 0 ? 'zero' : ''}">${s.totalRoles}</span></td>
       <td><span class="count-badge ${s.distinctRolesCount === 0 ? 'zero' : ''}">${s.distinctRolesCount}</span></td>
-      <td>${s.meetingsAttended} / ${s.meetingsTotal}</td>
       <td>
-        <span style="font-size:0.78rem">${s.attendanceRate}%</span>
-        <div class="attendance-bar"><div class="attendance-bar-fill" style="width:${s.attendanceRate}%"></div></div>
       </td>
       <td><span class="role-pill">${s.topRole}</span></td>
     </tr>
@@ -1227,7 +1198,6 @@ function showMemberDetail(name) {
         <div class="member-hero-stats">
           <div><div class="hero-stat-label">Total roles</div><div class="hero-stat-value">${sAllTime.totalRoles}</div></div>
           <div><div class="hero-stat-label">Distinct roles</div><div class="hero-stat-value">${sAllTime.distinctRolesCount}</div></div>
-          <div><div class="hero-stat-label">Meetings attended</div><div class="hero-stat-value">${sAllTime.meetingsAttended}</div></div>
           <div><div class="hero-stat-label">Levels complete</div><div class="hero-stat-value">${completedLevels} / 5</div></div>
         </div>
       </div>

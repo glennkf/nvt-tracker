@@ -1,7 +1,8 @@
 {
   "club": {
     "name": "Network Voice Toastmasters",
-    "tmYear": "2025-2026"
+    "tmYear": "2025-2026",
+    "_note_tmYear": "Not currently used by index.html - year toggle derives years from meeting dates instead"
   },
   "roleAliases": {
     "Grammarian/Word of the Day": "Grammarian",
@@ -143,7 +144,17 @@
       "manualRoles": []
     },
     {
+      "name": "Ellen M. McCurdy",
+      "active": true,
+      "manualRoles": []
+    },
+    {
       "name": "Glenn Fernandes",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "Glenn A. Pardo",
       "active": true,
       "manualRoles": []
     },
@@ -159,12 +170,12 @@
     },
     {
       "name": "Ifeany Gusiora",
-      "active": true,
+      "active": false,
       "manualRoles": []
     },
     {
       "name": "Ilidio Cardoso",
-      "active": true,
+      "active": false,
       "manualRoles": []
     },
     {
@@ -208,6 +219,11 @@
       "manualRoles": []
     },
     {
+      "name": "MaryAnne Graykin",
+      "active": true,
+      "manualRoles": []
+    },
+    {
       "name": "Maureen DeRoma",
       "active": true,
       "manualRoles": []
@@ -234,6 +250,11 @@
     },
     {
       "name": "Sarah Lundrigan",
+      "active": false,
+      "manualRoles": []
+    },
+    {
+      "name": "Slande Cheridor",
       "active": true,
       "manualRoles": []
     },
@@ -244,7 +265,7 @@
     },
     {
       "name": "Taina Chatelain",
-      "active": true,
+      "active": false,
       "manualRoles": []
     },
     {

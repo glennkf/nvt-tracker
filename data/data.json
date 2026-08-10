@@ -2053,14 +2053,6 @@
       "notAttending": [],
       "roles": [
         {
-          "role": "New",
-          "member": "Maureen DeRoma"
-        },
-        {
-          "role": "Officer",
-          "member": "Margaret O'Connor"
-        },
-        {
           "role": "Thought of the day",
           "member": "Angela Nuss"
         },
@@ -2081,7 +2073,7 @@
           "member": "Amanda Stanton"
         },
         {
-          "role": "New",
+          "role": "Speaker",
           "member": "Unkinou Her"
         },
         {

@@ -2052,27 +2052,27 @@
           "member": "Angela Nuss"
         },
         {
-          "role": "Table Topics Speaker", 
+          "role": "Table Topics Speaker",
           "member": "Michele Chamberlain"
         },
         {
-          "role": "Table Topics Speaker", 
+          "role": "Table Topics Speaker",
           "member": "Helen E. Long"
         },
         {
-          "role": "Table Topics Speaker", 
+          "role": "Table Topics Speaker",
           "member": "Amanda Stanton"
         },
         {
-          "role": "Table Topics Speaker", 
+          "role": "Table Topics Speaker",
           "member": "Lisa Walker"
         },
         {
-          "role": "Table Topics Speaker", 
+          "role": "Table Topics Speaker",
           "member": "Unkinou Her"
         },
         {
-          "role": "Table Topics Speaker", 
+          "role": "Table Topics Speaker",
           "member": "Mary"
         }
       ]
@@ -2224,6 +2224,58 @@
         {
           "role": "Evaluator",
           "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Lisa Walker"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-19",
+      "title": "August 19, 2026",
+      "attending": [],
+      "notAttending": [],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Ellen M. McCurdy"
+        },
+        {
+          "role": "Timer",
+          "member": "Glenn A. Pardo"
+        },
+        {
+          "role": "Speaker",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Speaker",
+          "member": "Glenn A. Pardo"
+        },
+        {
+          "role": "Speaker",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Michele Chamberlain"
         },
         {
           "role": "Evaluator",

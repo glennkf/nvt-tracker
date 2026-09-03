@@ -2282,6 +2282,58 @@
           "member": "Lisa Walker"
         }
       ]
+    },
+    {
+      "date": "2026-09-02",
+      "title": "September 2, 2026",
+      "attending": [],
+      "notAttending": [],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Stefano S. McGhee"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Timer",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Speaker",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "Speaker",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Daniel J. Wallace"
+        }
+      ]
     }
   ]
 }

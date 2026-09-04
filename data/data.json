@@ -2073,7 +2073,7 @@
         },
         {
           "role": "Table Topics Speaker",
-          "member": "Mary"
+          "member": "MaryAnne Graykin"
         }
       ]
     },
@@ -2280,6 +2280,26 @@
         {
           "role": "Evaluator",
           "member": "Lisa Walker"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Colin Campbell"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Sarah Records"
         }
       ]
     },
@@ -2332,6 +2352,46 @@
         {
           "role": "Table Topics Master",
           "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Mark Rinker"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Daniel Wallace"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Amanda Stanton"
         }
       ]
     }

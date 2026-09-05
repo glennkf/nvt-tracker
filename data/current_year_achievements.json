@@ -1,0 +1,26 @@
+{
+  "tmYear": "2026-2027",
+  "confirmedCompletions": [
+    {
+      "member": "Maureen DeRoma",
+      "path": "Innovative Planning",
+      "level": 3,
+      "dateConfirmed": "2026-09-04",
+      "note": "Confirmed by VPE"
+    },
+    {
+      "member": "Glenn Fernandes",
+      "path": "Visionary Communication",
+      "level": 4,
+      "dateConfirmed": "2026-09-04",
+      "note": "Confirmed by VPE"
+    },
+    {
+      "member": "Angela Nuss",
+      "path": "Visionary Communication",
+      "level": 4,
+      "dateConfirmed": "2026-09-04",
+      "note": "Confirmed by VPE"
+    }
+  ]
+}

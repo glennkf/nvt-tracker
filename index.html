@@ -1761,18 +1761,31 @@ function showMemberSpeechDates(memberName) {
       if (normalizeRole(r.role) === 'Speaker') {
         const matched = matchMember(cleanName(r.member));
         if (matched === memberName) {
-          speeches.push({ date: mtg.date, title: mtg.title });
+          speeches.push({ date: mtg.date, title: mtg.title, projectTitle: r.projectTitle || null, pathLevel: r.pathLevel || null });
         }
       }
     });
   });
   speeches.sort((a,b) => b.date.localeCompare(a.date));
 
+  const knownCount = speeches.filter(s => s.projectTitle).length;
+
   document.getElementById('modal-title').textContent = `${memberName} — speech dates (${speeches.length})`;
   document.getElementById('modal-member-list').innerHTML = speeches.length === 0
     ? '<li style="color:var(--text-muted)">No speeches found</li>'
-    : `<li style="color:var(--text-muted);font-size:0.75rem;font-style:italic;border-bottom:1px solid #f0f0f0;padding-bottom:6px;margin-bottom:4px">Project title / Pathways level not yet captured by the tracker — dates and meetings only.</li>` +
-      speeches.map(s => `<li><span style="font-weight:500">${s.date}</span><span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted)">${s.title}</span></li>`).join('');
+    : (knownCount < speeches.length
+        ? `<li style="color:var(--text-muted);font-size:0.75rem;font-style:italic;border-bottom:1px solid #f0f0f0;padding-bottom:6px;margin-bottom:4px">Project title / Pathways level captured for ${knownCount} of ${speeches.length} speeches.</li>`
+        : '') +
+      speeches.map(s => `
+        <li style="flex-direction:column;align-items:flex-start;gap:2px">
+          <div style="display:flex;justify-content:space-between;width:100%">
+            <span style="font-weight:500">${s.date}</span>
+            <span style="font-size:0.75rem;color:var(--text-muted)">${s.title}</span>
+          </div>
+          ${s.projectTitle ? `<div style="font-size:0.75rem;color:var(--text-secondary);font-style:italic">"${s.projectTitle}"</div>` : ''}
+          ${s.pathLevel ? `<div style="font-size:0.7rem;color:var(--navy)">${s.pathLevel}</div>` : ''}
+        </li>
+      `).join('');
 
   document.getElementById('not-participated-modal').classList.add('open');
 }

@@ -1581,7 +1581,7 @@ function buildDCPForecast() {
                 <td style="padding:6px 8px;font-weight:500;color:var(--navy)">${c.member}</td>
                 <td style="padding:6px 8px;color:var(--text-secondary);font-size:0.82rem">${c.path}</td>
                 <td style="padding:6px 8px"><span class="role-pill">Level ${c.level}</span></td>
-                <td style="padding:6px 8px;font-size:0.72rem;color:var(--text-muted)">confirmed ${c.dateConfirmed}</td>
+                <td style="padding:6px 8px;font-size:0.72rem;color:var(--text-muted)">confirmed ${c.date}</td>
               </tr>
             `).join('')}
           </tbody></table>`
@@ -1710,8 +1710,6 @@ function buildPathwaysGaps() {
 
   const gaps = [];
   Object.entries(speakerCounts).forEach(([member, speechCount]) => {
-    if (speechCount < 2) return; // only flag meaningful patterns
-
     const pathsMember = findPathsMember(member);
     let totalProjects = 0;
     if (pathsMember) {
@@ -1722,32 +1720,34 @@ function buildPathwaysGaps() {
       });
     }
 
-    if (totalProjects === 0) {
-      // Try to build a specific "X away from Level 1" insight if we know their Level 1 path
-      let levelHint = '';
-      if (pathsMember && pathsMember.paths.length > 0) {
-        const firstPath = pathsMember.paths[0];
-        const l1 = firstPath.levels['Level 1'];
-        if (l1 && !l1.approved) {
-          const remaining = Math.max(0, l1.total - speechCount);
-          levelHint = `If these ${speechCount} speeches were logged as Level 1 projects on ${firstPath.pathName}, she/he could be as close as ${remaining} project${remaining === 1 ? '' : 's'} away from completing Level 1.`;
-        }
-      } else if (!pathsMember) {
-        levelHint = `Not found in Base Camp Pathways records at all — may not have started a path yet.`;
+    const gap = speechCount - totalProjects;
+    if (gap <= 0) return; // no discrepancy - Basecamp equals or exceeds speeches
+
+    let levelHint = '';
+    if (pathsMember && pathsMember.paths.length > 0) {
+      const firstPath = pathsMember.paths[0];
+      const l1 = firstPath.levels['Level 1'];
+      if (l1 && !l1.approved) {
+        const remaining = Math.max(0, l1.total - totalProjects - gap);
+        levelHint = `Has ${totalProjects} logged project${totalProjects===1?'':'s'} on ${firstPath.pathName}. If the missing ${gap} speech${gap===1?'':'es'} were logged too, could be as close as ${Math.max(0, l1.total - speechCount)} project${Math.max(0, l1.total - speechCount)===1?'':'s'} away from completing Level 1.`;
+      } else {
+        levelHint = `Has ${totalProjects} logged project${totalProjects===1?'':'s'} on ${firstPath.pathName} — ${gap} speech${gap===1?'':'es'} not reflected there.`;
       }
-      gaps.push({ member, speechCount, levelHint });
+    } else if (!pathsMember) {
+      levelHint = `Not found in Base Camp Pathways records at all — may not have started a path yet.`;
     }
+    gaps.push({ member, speechCount, totalProjects, gap, levelHint });
   });
 
-  gaps.sort((a,b) => b.speechCount - a.speechCount);
+  gaps.sort((a,b) => b.gap - a.gap);
 
   container.innerHTML = gaps.length === 0
-    ? '<p style="padding:0 1.25rem;color:var(--text-muted);font-size:0.85rem">No gaps detected — all active speakers have matching Base Camp activity.</p>'
+    ? '<p style="padding:0 1.25rem;color:var(--text-muted);font-size:0.85rem">No gaps detected — all speakers have matching or greater Base Camp activity.</p>'
     : gaps.map(g => `
         <div style="padding:10px 1.25rem;border-bottom:1px solid #f5f5f5">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <span style="font-weight:500;color:var(--navy)">${g.member}</span>
-            <span style="color:var(--maroon);font-size:0.82rem;font-weight:500">${g.speechCount} speeches given · 0 Base Camp projects</span>
+            <span style="color:var(--maroon);font-size:0.82rem;font-weight:500">${g.speechCount} speeches · ${g.totalProjects} Base Camp project${g.totalProjects===1?'':'s'} · ${g.gap} missing</span>
           </div>
           ${g.levelHint ? `<div style="font-size:0.78rem;color:var(--text-secondary);margin-top:4px">${g.levelHint}</div>` : ''}
         </div>

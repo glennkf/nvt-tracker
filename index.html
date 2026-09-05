@@ -1576,7 +1576,7 @@ function buildDCPForecast() {
       ${(CURRENT_YEAR_ACHIEVEMENTS?.confirmedCompletions || []).length === 0
         ? '<p style="color:var(--text-muted);font-size:0.82rem">None confirmed yet.</p>'
         : `<table style="width:100%"><tbody>
-            ${CURRENT_YEAR_ACHIEVEMENTS.confirmedCompletions.map(c => `
+            ${[...CURRENT_YEAR_ACHIEVEMENTS.confirmedCompletions].sort((a,b) => b.date.localeCompare(a.date)).map(c => `
               <tr>
                 <td style="padding:6px 8px;font-weight:500;color:var(--navy)">${c.member}</td>
                 <td style="padding:6px 8px;color:var(--text-secondary);font-size:0.82rem">${c.path}</td>

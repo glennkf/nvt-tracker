@@ -529,6 +529,8 @@
   <button onclick="showTab('members')">Members</button>
   <button onclick="showTab('levels')">Pathways Role Checklist</button>
   <button onclick="showTab('meetings')">Meetings</button>
+  <button onclick="showTab('paths')">Paths in Progress</button>
+  <button onclick="showTab('forecast')">DCP Forecast</button>
   <div style="margin-left:auto;display:flex;align-items:center;gap:8px;padding:0 1rem;flex-shrink:0">
     <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);white-space:nowrap">TM Year:</span>
     <select id="year-select" onchange="onYearChange()" style="font-family:'DM Sans',sans-serif;font-size:0.78rem;padding:4px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:var(--dark-navy);color:white;cursor:pointer;min-width:110px">
@@ -640,6 +642,62 @@
       </div>
     </div>
 
+    <!-- PATHS IN PROGRESS TAB -->
+    <div id="tab-paths" class="tab-content">
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-header">
+          <h2>Paths in progress</h2>
+          <div class="search-row">
+            <input type="text" id="paths-search" placeholder="Search member…" oninput="renderPathsTable()" style="width:160px">
+            <span id="paths-updated" style="font-size:0.75rem;color:var(--text-muted)"></span>
+          </div>
+        </div>
+        <div style="padding:0.75rem 1.25rem;background:#fafafa;border-bottom:1px solid var(--border);font-size:0.78rem;color:var(--text-secondary)">
+          Sourced from each member's official Toastmasters Base Camp record. Data reflects the most recent manual snapshot — not real-time.
+        </div>
+        <div style="overflow-x:auto">
+          <table id="paths-table">
+            <thead>
+              <tr>
+                <th style="text-align:left;padding:8px 12px">Member</th>
+                <th style="text-align:left;padding:8px 12px">Path</th>
+                <th style="text-align:center;padding:8px 12px">Level 1</th>
+                <th style="text-align:center;padding:8px 12px">Level 2</th>
+                <th style="text-align:center;padding:8px 12px">Level 3</th>
+                <th style="text-align:center;padding:8px 12px">Level 4</th>
+                <th style="text-align:center;padding:8px 12px">Level 5</th>
+                <th style="text-align:center;padding:8px 12px">Path Completion</th>
+                <th style="text-align:left;padding:8px 12px">Status</th>
+              </tr>
+            </thead>
+            <tbody id="paths-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- DCP FORECAST TAB -->
+    <div id="tab-forecast" class="tab-content">
+      <div class="alert-banner" style="background:#fff3e0;border:1px solid #ffcc80;border-radius:var(--radius);padding:0.875rem 1.25rem;font-size:0.82rem;color:#e65100;margin-bottom:1rem">
+        <strong>Note:</strong> These are lifetime approved totals from Base Camp, not verified against the official TI Club Dashboard's current-year count. Toastmasters International only credits completions within the current TM year (July 1 – June 30) toward the Distinguished Club Program goals — this view is a planning aid, not the official record.
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-header">
+          <h2>Education goals — lifetime approved (approximate)</h2>
+        </div>
+        <div style="padding:1.25rem" id="dcp-goals-grid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Close to completing</h2>
+          <span style="font-size:0.75rem;color:var(--text-muted)">Members 1 project away from a level or path completion</span>
+        </div>
+        <div id="close-to-completing-list" style="padding:0.5rem 0"></div>
+      </div>
+    </div>
+
   </div>
 </main>
 
@@ -656,6 +714,7 @@
 
 <script>
 let DATA = null;
+let PATHS_DATA = null;
 let currentMember = null;
 let activeTab = 'overview';
 let selectedYear = 'all'; // 'all' or 'YYYY-YYYY' e.g. '2025-2026'
@@ -726,12 +785,22 @@ function populateYearSelect() {
 }
 
 const DATA_URL = 'data/data.json';
+const PATHS_URL = 'data/paths.json';
 
 async function loadData() {
   try {
     const res = await fetch(DATA_URL + '?t=' + Date.now());
     if (!res.ok) throw new Error('HTTP ' + res.status);
     DATA = await res.json();
+
+    // Load paths.json separately - non-fatal if missing
+    try {
+      const pathsRes = await fetch(PATHS_URL + '?t=' + Date.now());
+      if (pathsRes.ok) PATHS_DATA = await pathsRes.json();
+    } catch(e) {
+      console.warn('paths.json not available:', e.message);
+    }
+
     init();
   } catch(e) {
     document.getElementById('loading').style.display = 'none';
@@ -751,6 +820,8 @@ function init() {
   buildMemberList();
   buildLevels();
   buildMeetings();
+  buildPathsInProgress();
+  buildDCPForecast();
 }
 
 function showTab(tab) {
@@ -1323,6 +1394,168 @@ function buildMeetings() {
       </div>
     `;
   }).join('');
+}
+
+// ─── PATHS IN PROGRESS ─────────────────────────────────────────────────────
+function getLevelCellInfo(levelData) {
+  if (!levelData) return { display: '—', statusPart: null };
+  if (levelData.approved) {
+    return { display: '<span style="color:var(--green);font-size:1rem">✓</span>', statusPart: null };
+  }
+  const completed = levelData.completed || 0;
+  const total = levelData.total || 0;
+  if (completed >= total && total > 0) {
+    return { display: `${completed} of ${total}`, statusPart: 'awaiting' };
+  }
+  const remaining = total - completed;
+  return {
+    display: `${completed} of ${total}`,
+    statusPart: remaining === 1 ? '1-away' : null
+  };
+}
+
+function getPathStatus(pathEntry) {
+  const levelKeys = ['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'];
+  const pc = pathEntry.levels['Path Completion'];
+
+  // Path fully complete
+  if (pc && pc.completed >= pc.total && pc.total > 0) {
+    return { text: '🎉 Path complete', cls: 'complete' };
+  }
+
+  // Check each level for "1 away" or "awaiting approval"
+  for (const lk of levelKeys) {
+    const ld = pathEntry.levels[lk];
+    if (!ld) continue;
+    if (ld.approved) continue; // already done, keep checking next
+    const completed = ld.completed || 0;
+    const total = ld.total || 0;
+    if (completed >= total && total > 0) {
+      return { text: `⏳ ${lk} awaiting approval`, cls: 'awaiting' };
+    }
+    if (total - completed === 1) {
+      return { text: `🔥 1 away from ${lk}`, cls: 'close' };
+    }
+    // First incomplete, not-close level - stop here, this is current level
+    return { text: `${total - completed} away from ${lk}`, cls: 'normal' };
+  }
+
+  // All 5 levels approved, path completion not yet done
+  if (pc && !(pc.completed >= pc.total)) {
+    return { text: '🔥 1 away from Path Completion', cls: 'close' };
+  }
+
+  return { text: '—', cls: 'normal' };
+}
+
+function buildPathsInProgress() {
+  if (!PATHS_DATA) {
+    document.getElementById('paths-tbody').innerHTML =
+      '<tr><td colspan="9" class="empty-state">paths.json not found — Pathways progress data not yet loaded</td></tr>';
+    return;
+  }
+  document.getElementById('paths-updated').textContent = 'Last updated: ' + (PATHS_DATA.lastUpdated || 'unknown');
+  renderPathsTable();
+}
+
+function renderPathsTable() {
+  if (!PATHS_DATA) return;
+  const search = (document.getElementById('paths-search')?.value || '').toLowerCase();
+  const tbody = document.getElementById('paths-tbody');
+
+  const rows = [];
+  PATHS_DATA.members
+    .filter(m => !search || m.name.toLowerCase().includes(search))
+    .sort((a,b) => a.name.localeCompare(b.name))
+    .forEach(m => {
+      m.paths.forEach(p => {
+        const status = getPathStatus(p);
+        const statusColor = status.cls === 'complete' ? 'var(--green)' :
+                             status.cls === 'close' ? 'var(--maroon)' :
+                             status.cls === 'awaiting' ? '#e65100' : 'var(--text-secondary)';
+        rows.push(`
+          <tr>
+            <td style="padding:9px 12px;font-weight:500;color:var(--navy)">${m.name}</td>
+            <td style="padding:9px 12px;color:var(--text-secondary)">${p.pathName}</td>
+            ${['Level 1','Level 2','Level 3','Level 4','Level 5'].map(lk => {
+              const info = getLevelCellInfo(p.levels[lk]);
+              return `<td style="padding:9px 12px;text-align:center;font-size:0.82rem">${info.display}</td>`;
+            }).join('')}
+            <td style="padding:9px 12px;text-align:center;font-size:0.82rem">${getLevelCellInfo(p.levels['Path Completion']).display}</td>
+            <td style="padding:9px 12px;font-size:0.78rem;color:${statusColor};font-weight:500;white-space:nowrap">${status.text}</td>
+          </tr>
+        `);
+      });
+    });
+
+  tbody.innerHTML = rows.length ? rows.join('') : '<tr><td colspan="9" class="empty-state">No matching members</td></tr>';
+}
+
+// ─── DCP FORECAST ──────────────────────────────────────────────────────────
+function buildDCPForecast() {
+  if (!PATHS_DATA) {
+    document.getElementById('dcp-goals-grid').innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem">paths.json not found</p>';
+    document.getElementById('close-to-completing-list').innerHTML = '';
+    return;
+  }
+
+  // Tally lifetime approved levels across all members/paths
+  let l1=0, l2=0, l3=0, l4=0, pathComplete=0;
+  PATHS_DATA.members.forEach(m => {
+    m.paths.forEach(p => {
+      if (p.levels['Level 1']?.approved) l1++;
+      if (p.levels['Level 2']?.approved) l2++;
+      if (p.levels['Level 3']?.approved) l3++;
+      if (p.levels['Level 4']?.approved) l4++;
+      if (p.levels['Path Completion']?.completed >= p.levels['Path Completion']?.total && p.levels['Path Completion']?.total > 0) pathComplete++;
+    });
+  });
+
+  const goals = [
+    { label: 'Four Level 1 awards', have: l1, need: 4 },
+    { label: 'Two Level 2 awards', have: Math.min(l2, 2), need: 2 },
+    { label: 'Two more Level 2 awards', have: Math.max(0, Math.min(l2 - 2, 2)), need: 2 },
+    { label: 'Two Level 3 awards', have: l3, need: 2 },
+    { label: 'One Level 4, Path Completion, or DTM', have: Math.min(l4 + pathComplete, 1), need: 1 },
+    { label: 'One more Level 4, Path Completion, or DTM', have: Math.max(0, Math.min((l4 + pathComplete) - 1, 1)), need: 1 },
+  ];
+
+  document.getElementById('dcp-goals-grid').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.75rem">
+      ${goals.map(g => {
+        const met = g.have >= g.need;
+        return `
+          <div style="border:1px solid var(--border);border-radius:var(--radius);padding:0.875rem 1rem;background:${met ? 'var(--green-light)' : '#fafafa'}">
+            <div style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:4px">${g.label}</div>
+            <div style="font-size:1.3rem;font-weight:600;color:${met ? 'var(--green)' : 'var(--navy)'}">${g.have} / ${g.need}${met ? ' ✓' : ''}</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+
+  // Close to completing list
+  const closeItems = [];
+  PATHS_DATA.members.forEach(m => {
+    m.paths.forEach(p => {
+      const status = getPathStatus(p);
+      if (status.cls === 'close') {
+        closeItems.push({ name: m.name, path: p.pathName, text: status.text });
+      }
+    });
+  });
+
+  document.getElementById('close-to-completing-list').innerHTML = closeItems.length === 0
+    ? '<p style="padding:0 1.25rem;color:var(--text-muted);font-size:0.85rem">No members currently 1 project away from a milestone.</p>'
+    : closeItems.map(item => `
+        <div style="padding:10px 1.25rem;border-bottom:1px solid #f5f5f5;display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <span style="font-weight:500;color:var(--navy)">${item.name}</span>
+            <span style="color:var(--text-muted);font-size:0.82rem;margin-left:8px">${item.path}</span>
+          </div>
+          <span style="color:var(--maroon);font-size:0.82rem;font-weight:500">${item.text}</span>
+        </div>
+      `).join('');
 }
 
 function showSpeechesList() {

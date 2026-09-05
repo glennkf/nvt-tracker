@@ -679,6 +679,41 @@
     <!-- DCP FORECAST TAB -->
     <div id="tab-forecast" class="tab-content">
 
+      <!-- 2026-2027 IN PROGRESS -->
+      <h3 style="font-size:0.95rem;font-weight:600;color:var(--text-primary);margin-bottom:0.75rem">2026–2027 education goals — in progress</h3>
+
+      <div class="alert-banner" style="background:#e3f2fd;border:1px solid #90caf9;border-radius:var(--radius);padding:0.875rem 1.25rem;font-size:0.82rem;color:#1565c0;margin-bottom:1rem">
+        <strong>Note:</strong> This section only counts completions confirmed against the official District 31 record (below) — not raw Base Camp lifetime totals, which include completions from prior years and can't be reliably separated by date.
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-header">
+          <h2>Education goals — confirmed this program year</h2>
+        </div>
+        <div style="padding:1.25rem" id="dcp-goals-grid"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-header">
+          <h2>Close to completing</h2>
+          <span style="font-size:0.75rem;color:var(--text-muted)">Members 1 project away from a level or path completion</span>
+        </div>
+        <div id="close-to-completing-list" style="padding:0.5rem 0"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-header">
+          <h2>⚠️ Pathways entry gaps</h2>
+          <span style="font-size:0.75rem;color:var(--text-muted)">Members giving speeches but not logging them in Base Camp</span>
+        </div>
+        <div style="padding:0.75rem 1.25rem;background:#fafafa;border-bottom:1px solid var(--border);font-size:0.78rem;color:var(--text-secondary)">
+          These members have given speeches according to the meeting agendas, but show little or no matching activity in their official Base Camp Pathways record. If they submitted these speeches as projects, they could be much closer to a level completion.
+        </div>
+        <div id="pathways-gaps-list" style="padding:0.5rem 0"></div>
+      </div>
+
+      <hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--border)">
+
       <!-- 2025-2026 FINAL RESULTS -->
       <div class="card" style="margin-bottom:1.5rem" id="dcp-history-card">
         <div class="card-header">
@@ -690,30 +725,6 @@
           <div class="section-label" style="margin-bottom:0.5rem">Official awards submitted (District 31 record)</div>
           <div id="dcp-history-awards"></div>
         </div>
-      </div>
-
-      <hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--border)">
-
-      <!-- 2026-2027 IN PROGRESS -->
-      <h3 style="font-size:0.95rem;font-weight:600;color:var(--text-primary);margin-bottom:0.75rem">2026–2027 education goals — in progress</h3>
-
-      <div class="alert-banner" style="background:#e3f2fd;border:1px solid #90caf9;border-radius:var(--radius);padding:0.875rem 1.25rem;font-size:0.82rem;color:#1565c0;margin-bottom:1rem">
-        <strong>Note:</strong> This section only counts completions the VPE has manually confirmed for this program year (below) — not raw Base Camp lifetime totals, which include completions from prior years and can't be reliably separated by date. Let Glenn know when a member completes a level so it can be added here.
-      </div>
-
-      <div class="card" style="margin-bottom:1rem">
-        <div class="card-header">
-          <h2>Education goals — confirmed this program year</h2>
-        </div>
-        <div style="padding:1.25rem" id="dcp-goals-grid"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h2>Close to completing</h2>
-          <span style="font-size:0.75rem;color:var(--text-muted)">Members 1 project away from a level or path completion</span>
-        </div>
-        <div id="close-to-completing-list" style="padding:0.5rem 0"></div>
       </div>
     </div>
 
@@ -862,6 +873,7 @@ function init() {
   buildPathsInProgress();
   buildDCPForecast();
   buildDCPHistory();
+  buildPathwaysGaps();
 }
 
 function showTab(tab) {
@@ -1654,6 +1666,92 @@ function buildDCPHistory() {
       </tbody>
     </table>
   `;
+}
+
+// ─── PATHWAYS ENTRY GAPS ────────────────────────────────────────────────────
+function normalizeNameForPathsMatch(name) {
+  // Basic normalization: collapse middle initials/suffixes, hyphens to spaces for lookup
+  return name.replace(/\s+[A-Z]\.\s+/g, ' ').replace(/-/g, ' ').trim();
+}
+
+function findPathsMember(dataName) {
+  if (!PATHS_DATA) return null;
+  const norm = normalizeNameForPathsMatch(dataName).toLowerCase();
+  for (const m of PATHS_DATA.members) {
+    const pNorm = normalizeNameForPathsMatch(m.name).toLowerCase();
+    if (pNorm === norm) return m;
+  }
+  // fallback: last name + first initial match
+  const parts = norm.split(' ');
+  for (const m of PATHS_DATA.members) {
+    const pParts = normalizeNameForPathsMatch(m.name).toLowerCase().split(' ');
+    if (pParts.length >= 2 && parts.length >= 2 &&
+        pParts[pParts.length-1] === parts[parts.length-1] &&
+        pParts[0][0] === parts[0][0]) return m;
+  }
+  return null;
+}
+
+function buildPathwaysGaps() {
+  const container = document.getElementById('pathways-gaps-list');
+  if (!container) return;
+
+  // Count all-time Speaker roles per member (all years, all meetings)
+  const speakerCounts = {};
+  DATA.meetings.forEach(mtg => {
+    (mtg.roles || []).forEach(r => {
+      if (normalizeRole(r.role) === 'Speaker') {
+        const name = cleanName(r.member);
+        const matched = matchMember(name);
+        if (matched) speakerCounts[matched] = (speakerCounts[matched] || 0) + 1;
+      }
+    });
+  });
+
+  const gaps = [];
+  Object.entries(speakerCounts).forEach(([member, speechCount]) => {
+    if (speechCount < 2) return; // only flag meaningful patterns
+
+    const pathsMember = findPathsMember(member);
+    let totalProjects = 0;
+    if (pathsMember) {
+      pathsMember.paths.forEach(p => {
+        ['Level 1','Level 2','Level 3','Level 4','Level 5'].forEach(lk => {
+          totalProjects += p.levels[lk]?.completed || 0;
+        });
+      });
+    }
+
+    if (totalProjects === 0) {
+      // Try to build a specific "X away from Level 1" insight if we know their Level 1 path
+      let levelHint = '';
+      if (pathsMember && pathsMember.paths.length > 0) {
+        const firstPath = pathsMember.paths[0];
+        const l1 = firstPath.levels['Level 1'];
+        if (l1 && !l1.approved) {
+          const remaining = Math.max(0, l1.total - speechCount);
+          levelHint = `If these ${speechCount} speeches were logged as Level 1 projects on ${firstPath.pathName}, she/he could be as close as ${remaining} project${remaining === 1 ? '' : 's'} away from completing Level 1.`;
+        }
+      } else if (!pathsMember) {
+        levelHint = `Not found in Base Camp Pathways records at all — may not have started a path yet.`;
+      }
+      gaps.push({ member, speechCount, levelHint });
+    }
+  });
+
+  gaps.sort((a,b) => b.speechCount - a.speechCount);
+
+  container.innerHTML = gaps.length === 0
+    ? '<p style="padding:0 1.25rem;color:var(--text-muted);font-size:0.85rem">No gaps detected — all active speakers have matching Base Camp activity.</p>'
+    : gaps.map(g => `
+        <div style="padding:10px 1.25rem;border-bottom:1px solid #f5f5f5">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-weight:500;color:var(--navy)">${g.member}</span>
+            <span style="color:var(--maroon);font-size:0.82rem;font-weight:500">${g.speechCount} speeches given · 0 Base Camp projects</span>
+          </div>
+          ${g.levelHint ? `<div style="font-size:0.78rem;color:var(--text-secondary);margin-top:4px">${g.levelHint}</div>` : ''}
+        </div>
+      `).join('');
 }
 
 function showSpeechesList() {

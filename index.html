@@ -1744,14 +1744,37 @@ function buildPathwaysGaps() {
   container.innerHTML = gaps.length === 0
     ? '<p style="padding:0 1.25rem;color:var(--text-muted);font-size:0.85rem">No gaps detected — all speakers have matching or greater Base Camp activity.</p>'
     : gaps.map(g => `
-        <div style="padding:10px 1.25rem;border-bottom:1px solid #f5f5f5">
+        <div style="padding:10px 1.25rem;border-bottom:1px solid #f5f5f5;cursor:pointer" onclick="showMemberSpeechDates('${g.member.replace(/'/g,"\\'")}')" title="Click to see speech dates">
           <div style="display:flex;justify-content:space-between;align-items:center">
-            <span style="font-weight:500;color:var(--navy)">${g.member}</span>
+            <span style="font-weight:500;color:var(--navy)">${g.member} <span style="font-size:0.7rem;color:var(--text-muted)">▸</span></span>
             <span style="color:var(--maroon);font-size:0.82rem;font-weight:500">${g.speechCount} speeches · ${g.totalProjects} Base Camp project${g.totalProjects===1?'':'s'} · ${g.gap} missing</span>
           </div>
           ${g.levelHint ? `<div style="font-size:0.78rem;color:var(--text-secondary);margin-top:4px">${g.levelHint}</div>` : ''}
         </div>
       `).join('');
+}
+
+function showMemberSpeechDates(memberName) {
+  const speeches = [];
+  DATA.meetings.forEach(mtg => {
+    (mtg.roles || []).forEach(r => {
+      if (normalizeRole(r.role) === 'Speaker') {
+        const matched = matchMember(cleanName(r.member));
+        if (matched === memberName) {
+          speeches.push({ date: mtg.date, title: mtg.title });
+        }
+      }
+    });
+  });
+  speeches.sort((a,b) => b.date.localeCompare(a.date));
+
+  document.getElementById('modal-title').textContent = `${memberName} — speech dates (${speeches.length})`;
+  document.getElementById('modal-member-list').innerHTML = speeches.length === 0
+    ? '<li style="color:var(--text-muted)">No speeches found</li>'
+    : `<li style="color:var(--text-muted);font-size:0.75rem;font-style:italic;border-bottom:1px solid #f0f0f0;padding-bottom:6px;margin-bottom:4px">Project title / Pathways level not yet captured by the tracker — dates and meetings only.</li>` +
+      speeches.map(s => `<li><span style="font-weight:500">${s.date}</span><span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted)">${s.title}</span></li>`).join('');
+
+  document.getElementById('not-participated-modal').classList.add('open');
 }
 
 function showSpeechesList() {

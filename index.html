@@ -697,13 +697,13 @@
       <!-- 2026-2027 IN PROGRESS -->
       <h3 style="font-size:0.95rem;font-weight:600;color:var(--text-primary);margin-bottom:0.75rem">2026–2027 education goals — in progress</h3>
 
-      <div class="alert-banner" style="background:#fff3e0;border:1px solid #ffcc80;border-radius:var(--radius);padding:0.875rem 1.25rem;font-size:0.82rem;color:#e65100;margin-bottom:1rem">
-        <strong>Note:</strong> These are lifetime approved totals from Base Camp, not verified against the official TI Club Dashboard's current-year count. Toastmasters International only credits completions within the current TM year (July 1 – June 30) toward the Distinguished Club Program goals — this view is a planning aid, not the official record.
+      <div class="alert-banner" style="background:#e3f2fd;border:1px solid #90caf9;border-radius:var(--radius);padding:0.875rem 1.25rem;font-size:0.82rem;color:#1565c0;margin-bottom:1rem">
+        <strong>Note:</strong> This section only counts completions the VPE has manually confirmed for this program year (below) — not raw Base Camp lifetime totals, which include completions from prior years and can't be reliably separated by date. Let Glenn know when a member completes a level so it can be added here.
       </div>
 
       <div class="card" style="margin-bottom:1rem">
         <div class="card-header">
-          <h2>Education goals — lifetime approved (approximate)</h2>
+          <h2>Education goals — confirmed this program year</h2>
         </div>
         <div style="padding:1.25rem" id="dcp-goals-grid"></div>
       </div>
@@ -806,7 +806,9 @@ function populateYearSelect() {
 const DATA_URL = 'data/data.json';
 const PATHS_URL = 'data/paths.json';
 const DCP_HISTORY_URL = 'data/dcp_history.json';
+const CURRENT_YEAR_URL = 'data/current_year_achievements.json';
 let DCP_HISTORY = null;
+let CURRENT_YEAR_ACHIEVEMENTS = null;
 
 async function loadData() {
   try {
@@ -828,6 +830,14 @@ async function loadData() {
       if (histRes.ok) DCP_HISTORY = await histRes.json();
     } catch(e) {
       console.warn('dcp_history.json not available:', e.message);
+    }
+
+    // Load current_year_achievements.json separately - non-fatal if missing
+    try {
+      const curRes = await fetch(CURRENT_YEAR_URL + '?t=' + Date.now());
+      if (curRes.ok) CURRENT_YEAR_ACHIEVEMENTS = await curRes.json();
+    } catch(e) {
+      console.warn('current_year_achievements.json not available:', e.message);
     }
 
     init();
@@ -1523,31 +1533,18 @@ function renderPathsTable() {
 
 // ─── DCP FORECAST ──────────────────────────────────────────────────────────
 function buildDCPForecast() {
-  if (!PATHS_DATA) {
-    document.getElementById('dcp-goals-grid').innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem">paths.json not found</p>';
-    document.getElementById('close-to-completing-list').innerHTML = '';
-    return;
-  }
-
-  // Tally lifetime approved levels across all members/paths
-  let l1=0, l2=0, l3=0, l4=0, pathComplete=0;
-  PATHS_DATA.members.forEach(m => {
-    m.paths.forEach(p => {
-      if (p.levels['Level 1']?.approved) l1++;
-      if (p.levels['Level 2']?.approved) l2++;
-      if (p.levels['Level 3']?.approved) l3++;
-      if (p.levels['Level 4']?.approved) l4++;
-      if (p.levels['Path Completion']?.completed >= p.levels['Path Completion']?.total && p.levels['Path Completion']?.total > 0) pathComplete++;
-    });
+  const goalTotals = { 1: 0, 2: 0, 3: 0, 4: 0 };
+  (CURRENT_YEAR_ACHIEVEMENTS?.confirmedCompletions || []).forEach(c => {
+    if (goalTotals[c.level] !== undefined) goalTotals[c.level]++;
   });
 
   const goals = [
-    { label: 'Four Level 1 awards', have: l1, need: 4 },
-    { label: 'Two Level 2 awards', have: Math.min(l2, 2), need: 2 },
-    { label: 'Two more Level 2 awards', have: Math.max(0, Math.min(l2 - 2, 2)), need: 2 },
-    { label: 'Two Level 3 awards', have: l3, need: 2 },
-    { label: 'One Level 4, Path Completion, or DTM', have: Math.min(l4 + pathComplete, 1), need: 1 },
-    { label: 'One more Level 4, Path Completion, or DTM', have: Math.max(0, Math.min((l4 + pathComplete) - 1, 1)), need: 1 },
+    { label: 'Four Level 1 awards', have: goalTotals[1], need: 4 },
+    { label: 'Two Level 2 awards', have: Math.min(goalTotals[2], 2), need: 2 },
+    { label: 'Two more Level 2 awards', have: Math.max(0, Math.min(goalTotals[2] - 2, 2)), need: 2 },
+    { label: 'Two Level 3 awards', have: goalTotals[3], need: 2 },
+    { label: 'One Level 4, Path Completion, or DTM', have: Math.min(goalTotals[4], 1), need: 1 },
+    { label: 'One more Level 4, Path Completion, or DTM', have: Math.max(0, Math.min(goalTotals[4] - 1, 1)), need: 1 },
   ];
 
   document.getElementById('dcp-goals-grid').innerHTML = `
@@ -1562,9 +1559,29 @@ function buildDCPForecast() {
         `;
       }).join('')}
     </div>
+    <div style="margin-top:1rem">
+      <div class="section-label" style="margin-bottom:0.5rem">Confirmed completions this program year</div>
+      ${(CURRENT_YEAR_ACHIEVEMENTS?.confirmedCompletions || []).length === 0
+        ? '<p style="color:var(--text-muted);font-size:0.82rem">None confirmed yet.</p>'
+        : `<table style="width:100%"><tbody>
+            ${CURRENT_YEAR_ACHIEVEMENTS.confirmedCompletions.map(c => `
+              <tr>
+                <td style="padding:6px 8px;font-weight:500;color:var(--navy)">${c.member}</td>
+                <td style="padding:6px 8px;color:var(--text-secondary);font-size:0.82rem">${c.path}</td>
+                <td style="padding:6px 8px"><span class="role-pill">Level ${c.level}</span></td>
+                <td style="padding:6px 8px;font-size:0.72rem;color:var(--text-muted)">confirmed ${c.dateConfirmed}</td>
+              </tr>
+            `).join('')}
+          </tbody></table>`
+      }
+    </div>
   `;
 
-  // Close to completing list
+  // Close to completing list (still uses live Base Camp snapshot - this part is independent of the goal tally above)
+  if (!PATHS_DATA) {
+    document.getElementById('close-to-completing-list').innerHTML = '<p style="padding:0 1.25rem;color:var(--text-muted);font-size:0.85rem">paths.json not found</p>';
+    return;
+  }
   const closeItems = [];
   PATHS_DATA.members.forEach(m => {
     m.paths.forEach(p => {

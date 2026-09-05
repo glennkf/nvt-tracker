@@ -1,0 +1,129 @@
+{
+  "tmYear": "2025-2026",
+  "status": "final",
+  "distinguishedEducationGoalsMet": true,
+  "records": [
+    {
+      "award": "VC1",
+      "date": "2025-07-07",
+      "member": "Jennifer McGhee",
+      "level": 1
+    },
+    {
+      "award": "PM1",
+      "date": "2025-09-16",
+      "member": "Lisa M. Axios",
+      "level": 1
+    },
+    {
+      "award": "VC4",
+      "date": "2025-09-27",
+      "member": null,
+      "level": 4
+    },
+    {
+      "award": "IP2",
+      "date": "2025-10-01",
+      "member": "Maureen DeRoma",
+      "level": 2
+    },
+    {
+      "award": "IP4",
+      "date": "2025-12-04",
+      "member": "Margaret O'Connor",
+      "level": 4
+    },
+    {
+      "award": "VC2",
+      "date": "2026-01-12",
+      "member": "Jennifer McGhee",
+      "level": 2
+    },
+    {
+      "award": "VC3",
+      "date": "2026-03-15",
+      "member": "Jennifer McGhee",
+      "level": 3
+    },
+    {
+      "award": "VC1",
+      "date": "2026-03-21",
+      "member": "Glenn Fernandes",
+      "level": 1
+    },
+    {
+      "award": "PM1",
+      "date": "2026-04-12",
+      "member": "Mary Ahlfeld",
+      "level": 1
+    },
+    {
+      "award": "VC2",
+      "date": "2026-04-12",
+      "member": "Glenn Fernandes",
+      "level": 2
+    },
+    {
+      "award": "VC3",
+      "date": "2026-05-03",
+      "member": "Glenn Fernandes",
+      "level": 3
+    },
+    {
+      "award": "LD2",
+      "date": "2026-05-10",
+      "member": "Angela Nuss",
+      "level": 2
+    },
+    {
+      "award": "PWMENTORPGM",
+      "date": "2026-05-28",
+      "member": "Jennifer McGhee",
+      "level": null
+    },
+    {
+      "award": "VC4",
+      "date": "2026-06-23",
+      "member": "Jennifer McGhee",
+      "level": 4
+    }
+  ],
+  "goalTally": [
+    {
+      "label": "Four Level 1 awards",
+      "have": 4,
+      "need": 4
+    },
+    {
+      "label": "Two Level 2 awards",
+      "have": 2,
+      "need": 2
+    },
+    {
+      "label": "Two more Level 2 awards",
+      "have": 2,
+      "need": 2
+    },
+    {
+      "label": "Two Level 3 awards",
+      "have": 2,
+      "need": 2
+    },
+    {
+      "label": "One Level 4, Path Completion, or DTM",
+      "have": 1,
+      "need": 1
+    },
+    {
+      "label": "One more Level 4, Path Completion, or DTM",
+      "have": 1,
+      "need": 1
+    }
+  ],
+  "rawCounts": {
+    "level1": 4,
+    "level2": 4,
+    "level3": 2,
+    "level4OrCompletion": 3
+  }
+}

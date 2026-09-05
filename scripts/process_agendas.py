@@ -280,7 +280,7 @@ def parse_agenda_text(text, filename=''):
         notes = notes_block.group(1)
 
         # Table Topics Speakers: Name, Name, Name
-        tt_m = re.search(r'Table Topics Speakers?:\s*(.+?)(?:\n|$)', notes, re.IGNORECASE)
+        tt_m = re.search(r'Table Topics? Speakers?:\s*(.+?)(?:\n|$)', notes, re.IGNORECASE)
         if tt_m:
             for name in tt_m.group(1).split(','):
                 mc = clean_name(name.strip())
@@ -359,6 +359,7 @@ def list_pdfs(service):
         fields='files(id, name, modifiedTime)',
         orderBy='name'
     ).execute()
+
     return results.get('files', [])
 
 def read_pdf_text(service, file_id):
@@ -390,6 +391,7 @@ def main():
         data = json.load(f)
 
     existing_dates = {m['date'] for m in data.get('meetings', [])}
+    existing_modified = {m['date']: m.get('pdfModifiedTime', '') for m in data.get('meetings', [])}
     members = data['members']
 
     print('Connecting to Google Drive...')
@@ -418,8 +420,20 @@ def main():
             continue
 
         if parsed['date'] in existing_dates:
-            print(f'  {parsed["date"]} already in tracker — skipping')
-            continue
+            stored_modified = existing_modified.get(parsed['date'], '')
+            current_modified = pdf.get('modifiedTime', '')
+            # Only reprocess if we have a stored modifiedTime AND PDF has changed since
+            # If no stored modifiedTime (legacy meetings), skip as normal to protect manual fixes
+            if not stored_modified:
+                print(f'  {parsed["date"]} already in tracker — skipping')
+                continue
+            elif stored_modified >= current_modified:
+                print(f'  {parsed["date"]} already in tracker and PDF unchanged — skipping')
+                continue
+            else:
+                print(f'  {parsed["date"]} PDF was modified — reprocessing')
+                data['meetings'] = [m for m in data['meetings'] if m['date'] != parsed['date']]
+                existing_dates.discard(parsed['date'])
 
         print(f'  Date: {parsed["date"]}')
         print(f'  Roles found: {len(parsed["roles"])}')
@@ -430,6 +444,7 @@ def main():
         entry = {
             'date': parsed['date'],
             'title': parsed['title'],
+            'pdfModifiedTime': pdf.get('modifiedTime', ''),
             'attending': [],
             'notAttending': [],
             'roles': []

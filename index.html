@@ -1321,6 +1321,20 @@ function showMemberDetail(name) {
     `;
   }).join('');
 
+  // Speech history - pulled directly from meetings since roleHistory doesn't carry project fields
+  const speechHistory = [];
+  DATA.meetings.forEach(mtg => {
+    (mtg.roles || []).forEach(r => {
+      if (r.role === 'Speaker') {
+        const matched = matchMember(cleanName(r.member));
+        if (matched === name) {
+          speechHistory.push({ date: mtg.date, title: mtg.title, projectTitle: r.projectTitle || null, pathLevel: r.pathLevel || null });
+        }
+      }
+    });
+  });
+  speechHistory.sort((a,b) => b.date.localeCompare(a.date));
+
   const detailHTML = `
     <button class="back-btn" onclick="showMemberList()">← Back to members</button>
     <div class="card" style="margin-bottom:1rem">
@@ -1347,6 +1361,28 @@ function showMemberDetail(name) {
         <div class="level-checklist" style="padding:0;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.75rem;margin-bottom:1.5rem">
           ${levelCards}
         </div>
+        ${speechHistory.length > 0 ? `
+        <div class="section-label">Speech history</div>
+        <table style="width:100%;margin-bottom:1.5rem">
+          <thead><tr>
+            <th style="font-size:0.68rem">Date</th>
+            <th style="font-size:0.68rem">Meeting</th>
+            <th style="font-size:0.68rem">Project</th>
+          </tr></thead>
+          <tbody>
+            ${speechHistory.map(sp => `
+              <tr>
+                <td style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--text-muted);vertical-align:top;white-space:nowrap">${sp.date}</td>
+                <td style="font-size:0.78rem;vertical-align:top;white-space:nowrap">${sp.title}</td>
+                <td style="font-size:0.78rem">
+                  ${sp.projectTitle ? `<div style="font-style:italic;color:var(--text-secondary)">"${sp.projectTitle}"</div>` : '<span style="color:var(--text-muted)">—</span>'}
+                  ${sp.pathLevel ? `<div style="font-size:0.7rem;color:var(--navy);margin-top:2px">${sp.pathLevel}</div>` : ''}
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        ` : ''}
         <div class="section-label">Role history</div>
         ${history.length === 0 ? '<p style="font-size:0.82rem;color:var(--text-muted)">No history recorded</p>' : `
           <table style="width:100%">
@@ -1796,20 +1832,34 @@ function showSpeechesList() {
   meetings.forEach(m => {
     (m.roles || []).forEach(r => {
       if (r.role === 'Speaker') {
-        speeches.push({ member: r.member, date: m.date, title: m.title });
+        speeches.push({ member: r.member, date: m.date, title: m.title, projectTitle: r.projectTitle || null, pathLevel: r.pathLevel || null });
       }
     });
   });
   speeches.sort((a,b) => b.date.localeCompare(a.date));
 
   const yearLabel = selectedYear === 'all' ? 'All years' : selectedYear;
+  const knownCount = speeches.filter(s => s.projectTitle).length;
+
   document.getElementById('modal-title').textContent = 
     `Speeches given — ${yearLabel} (${speeches.length})`;
-  
+
   document.getElementById('modal-member-list').innerHTML = speeches.length === 0
     ? '<li style="color:var(--text-muted)">No speeches recorded yet</li>'
-    : speeches.map(s => `<li><span style="font-weight:500">${s.member}</span><span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted)">${s.date}</span></li>`).join('');
-  
+    : (knownCount < speeches.length
+        ? `<li style="color:var(--text-muted);font-size:0.75rem;font-style:italic;border-bottom:1px solid #f0f0f0;padding-bottom:6px;margin-bottom:4px">Project title / Pathways level captured for ${knownCount} of ${speeches.length} speeches.</li>`
+        : '') +
+      speeches.map(s => `
+        <li style="flex-direction:column;align-items:flex-start;gap:2px">
+          <div style="display:flex;justify-content:space-between;width:100%">
+            <span style="font-weight:500">${s.member}</span>
+            <span style="font-size:0.75rem;color:var(--text-muted)">${s.date}</span>
+          </div>
+          ${s.projectTitle ? `<div style="font-size:0.75rem;color:var(--text-secondary);font-style:italic">"${s.projectTitle}"</div>` : ''}
+          ${s.pathLevel ? `<div style="font-size:0.7rem;color:var(--navy)">${s.pathLevel}</div>` : ''}
+        </li>
+      `).join('');
+
   document.getElementById('not-participated-modal').classList.add('open');
 }
 

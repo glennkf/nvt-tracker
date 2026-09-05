@@ -678,6 +678,25 @@
 
     <!-- DCP FORECAST TAB -->
     <div id="tab-forecast" class="tab-content">
+
+      <!-- 2025-2026 FINAL RESULTS -->
+      <div class="card" style="margin-bottom:1.5rem" id="dcp-history-card">
+        <div class="card-header">
+          <h2>2025–2026 education goals — final result</h2>
+          <span id="dcp-history-badge"></span>
+        </div>
+        <div style="padding:1.25rem" id="dcp-history-grid"></div>
+        <div style="padding:0 1.25rem 1.25rem">
+          <div class="section-label" style="margin-bottom:0.5rem">Official awards submitted (District 31 record)</div>
+          <div id="dcp-history-awards"></div>
+        </div>
+      </div>
+
+      <hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--border)">
+
+      <!-- 2026-2027 IN PROGRESS -->
+      <h3 style="font-size:0.95rem;font-weight:600;color:var(--text-primary);margin-bottom:0.75rem">2026–2027 education goals — in progress</h3>
+
       <div class="alert-banner" style="background:#fff3e0;border:1px solid #ffcc80;border-radius:var(--radius);padding:0.875rem 1.25rem;font-size:0.82rem;color:#e65100;margin-bottom:1rem">
         <strong>Note:</strong> These are lifetime approved totals from Base Camp, not verified against the official TI Club Dashboard's current-year count. Toastmasters International only credits completions within the current TM year (July 1 – June 30) toward the Distinguished Club Program goals — this view is a planning aid, not the official record.
       </div>
@@ -786,6 +805,8 @@ function populateYearSelect() {
 
 const DATA_URL = 'data/data.json';
 const PATHS_URL = 'data/paths.json';
+const DCP_HISTORY_URL = 'data/dcp_history.json';
+let DCP_HISTORY = null;
 
 async function loadData() {
   try {
@@ -799,6 +820,14 @@ async function loadData() {
       if (pathsRes.ok) PATHS_DATA = await pathsRes.json();
     } catch(e) {
       console.warn('paths.json not available:', e.message);
+    }
+
+    // Load dcp_history.json separately - non-fatal if missing
+    try {
+      const histRes = await fetch(DCP_HISTORY_URL + '?t=' + Date.now());
+      if (histRes.ok) DCP_HISTORY = await histRes.json();
+    } catch(e) {
+      console.warn('dcp_history.json not available:', e.message);
     }
 
     init();
@@ -822,6 +851,7 @@ function init() {
   buildMeetings();
   buildPathsInProgress();
   buildDCPForecast();
+  buildDCPHistory();
 }
 
 function showTab(tab) {
@@ -1556,6 +1586,57 @@ function buildDCPForecast() {
           <span style="color:var(--maroon);font-size:0.82rem;font-weight:500">${item.text}</span>
         </div>
       `).join('');
+}
+
+// ─── DCP HISTORY (Prior Year Final Results) ───────────────────────────────
+function buildDCPHistory() {
+  if (!DCP_HISTORY) {
+    document.getElementById('dcp-history-card').style.display = 'none';
+    return;
+  }
+
+  const badge = document.getElementById('dcp-history-badge');
+  if (DCP_HISTORY.distinguishedEducationGoalsMet) {
+    badge.innerHTML = '<span style="background:var(--green-light);color:var(--green);font-size:0.75rem;font-weight:600;padding:4px 10px;border-radius:20px">✓ All 6 goals met</span>';
+  } else {
+    badge.innerHTML = '<span style="background:var(--amber-light);color:var(--amber);font-size:0.75rem;font-weight:600;padding:4px 10px;border-radius:20px">Goals not fully met</span>';
+  }
+
+  document.getElementById('dcp-history-grid').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.75rem">
+      ${DCP_HISTORY.goalTally.map(g => {
+        const met = g.have >= g.need;
+        return `
+          <div style="border:1px solid var(--border);border-radius:var(--radius);padding:0.875rem 1rem;background:${met ? 'var(--green-light)' : '#fafafa'}">
+            <div style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:4px">${g.label}</div>
+            <div style="font-size:1.3rem;font-weight:600;color:${met ? 'var(--green)' : 'var(--navy)'}">${g.have} / ${g.need}${met ? ' ✓' : ''}</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+
+  const sortedRecords = [...DCP_HISTORY.records].sort((a,b) => a.date.localeCompare(b.date));
+  document.getElementById('dcp-history-awards').innerHTML = `
+    <table style="width:100%">
+      <thead>
+        <tr>
+          <th style="text-align:left;padding:6px 8px;font-size:0.68rem">Date</th>
+          <th style="text-align:left;padding:6px 8px;font-size:0.68rem">Award</th>
+          <th style="text-align:left;padding:6px 8px;font-size:0.68rem">Member</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sortedRecords.map(r => `
+          <tr>
+            <td style="padding:6px 8px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--text-muted)">${r.date}</td>
+            <td style="padding:6px 8px"><span class="role-pill">${r.award}</span></td>
+            <td style="padding:6px 8px;font-size:0.82rem">${r.member || '<span style="color:var(--text-muted);font-style:italic">Name not disclosed</span>'}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
 }
 
 function showSpeechesList() {

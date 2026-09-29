@@ -25,7 +25,7 @@ MONTHS = {
 
 ROLE_ALIASES = {
     'grammarian/word of the day': 'Grammarian',
-    'grammarian/word of the day report': 'Grammarian',
+    'grammarian/word of the day report': None,
     'ah-counter': 'Grammarian', 'ah counter': 'Grammarian',
     'evaluator #1': 'Evaluator', 'evaluator #2': 'Evaluator',
     'evaluator #3': 'Evaluator', 'evaluator #4': 'Evaluator',
@@ -46,12 +46,18 @@ ROLE_ALIASES = {
     'new member ice breaker speech #2': 'Speaker',
     'new member ice breaker speech #3': 'Speaker',
     'new member ice breaker speech': 'Speaker',
+    'new member induction': None,
+    'officer inductions': None,
+    'officer induction': None,
+    'role tracker prizes': None,
 }
 
 SKIP_CONTAINS = [
     'path / project', 'project title', 'evaluates the meeting',
     'impromptu speaking', 'evaluates the usage', 'opens meeting',
-    'attending:', '(end) attending', 'not attending', 'meeting notes'
+    'attending:', '(end) attending', 'not attending', 'meeting notes',
+    'evaluated by:', 'evaluates:', 'open speaker', 'project guide',
+    'eval form',
 ]
 
 CRED_RE = re.compile(
@@ -68,6 +74,7 @@ TIME_RE = re.compile(r'(\d{1,2}:\d{2}(?:AM|PM))', re.IGNORECASE)
 # ─── NAME UTILS ───────────────────────────────────────────────────────────────
 def clean_name(raw):
     if not raw or raw.strip() in ('-', '', '—', '–', '-', '- '): return None
+    if 'open speaker' in raw.lower(): return None
     cleaned = CRED_RE.sub('', raw).strip().strip(',').strip()
     cleaned = re.sub(r'\s+', ' ', cleaned)
     if not cleaned or len(cleaned) < 3: return None
@@ -136,9 +143,9 @@ KNOWN_ROLES = [
     r'Joke of the day',
     r'Timer(?!\s+Report)',
     r'Grammarian/Word of the Day(?:\s+Report)?',
-    r'Speaker\s+#?\d+(?:\s*-\s*-)?(?:\s+\d+[-–]\d+\s*minutes?)?',
+    r'Speaker(?:\s+#?\d+)?(?:\s*-\s*-)?(?:\s+\d+[-–]\d+\s*minutes?)?',
     r'General Evaluator',
-    r'Evaluator\s+#?\d+(?:\s*-\s*-)?(?:\s+\d+[-–]\d+\s*minutes?)?',
+    r'Evaluator(?:\s+#?\d+)?(?:\s*-\s*-)?(?:\s+\d+[-–]\d+\s*minutes?)?',
     r'Table Topics Master',
     r'Table Topics Speaker',
     r"President'?s?\s+(?:Welcome|Closing Remarks)",
@@ -149,6 +156,9 @@ KNOWN_ROLES = [
     r'Voting(?:\s+for\s+Officers|\s+Results)?',
     r'Break',
     r'Toastmasters? return from break',
+    r'New Member Induction',
+    r'Officer Inductions?',
+    r'Role Tracker Prizes',
 ]
 KNOWN_ROLE_RE = re.compile(
     r'^(' + '|'.join(KNOWN_ROLES) + r')\b', re.IGNORECASE
@@ -161,6 +171,9 @@ def parse_agenda_text(text, filename=''):
 
     # Extract meeting date from title line
     title_m = re.search(r'Agenda Item for ([\w]+\s+\d+,?\s+\d{4})', text, re.IGNORECASE)
+    if not title_m:
+        # FTH4 format: "Club Meeting\nSeptember 16, 2026 at 6:45PM EDT" (may wrap across lines)
+        title_m = re.search(r'Club Meeting\s+([A-Za-z]+\s+\d+,?\s+\d{4})\s+at', text, re.IGNORECASE)
     title = title_m.group(1).strip() if title_m else filename
     date = None
     dm = re.search(
@@ -182,7 +195,7 @@ def parse_agenda_text(text, filename=''):
         line = lines[i]
 
         # Stop at attending section
-        if re.match(r'^(Attending:|Not Attending:|Meeting Notes?:)', line, re.IGNORECASE):
+        if re.match(r'^(Attending:|Not Attending:|Meeting Notes?:?)', line, re.IGNORECASE):
             stop_parsing = True
             break
 
@@ -194,6 +207,8 @@ def parse_agenda_text(text, filename=''):
 
         time_key = tm.group(1)
         rest = tm.group(2).strip()
+        # Strip FTH4 noise glued onto role lines (e.g. "Timer ⏱ Timer sheet Glenn Fernandes")
+        rest = re.sub(r'⏱\s*Timer sheet\s*', '', rest, flags=re.IGNORECASE).strip()
 
         if time_key in seen_times:
             i += 1
@@ -275,14 +290,19 @@ def parse_agenda_text(text, filename=''):
         i += 1
 
     # Parse Meeting Notes for Table Topics Speakers, Mentors, etc.
-    notes_block = re.search(r'Meeting Notes?:(.*?)(?:https://|$)', text, re.DOTALL | re.IGNORECASE)
+    notes_block = re.search(r'Meeting Notes?:?(.*?)(?:https://|$)', text, re.DOTALL | re.IGNORECASE)
     if notes_block:
         notes = notes_block.group(1)
 
-        # Table Topics Speakers: Name, Name, Name
-        tt_m = re.search(r'Table Topics? Speakers?:\s*(.+?)(?:\n|$)', notes, re.IGNORECASE)
+        # Table Topics Speakers: Name, Name, Name (may wrap across multiple lines)
+        tt_m = re.search(
+            r'Table Topics? Speakers?:\s*(.+?)(?=Introductory Mentor:|Club Mentor:|Specialized Role:|$)',
+            notes, re.IGNORECASE | re.DOTALL
+        )
         if tt_m:
-            for name in tt_m.group(1).split(','):
+            # Line-wrap within the list is not a delimiter - rejoin with a space, not a comma
+            joined = re.sub(r'\s*\n\s*', ' ', tt_m.group(1)).strip()
+            for name in joined.split(','):
                 mc = clean_name(name.strip())
                 if mc:
                     roles.append({'role': normalize_role('Table Topics Speaker', from_notes=True), 'member': mc})
@@ -313,7 +333,7 @@ def parse_agenda_text(text, filename=''):
     not_attending = []
 
     a_block = re.search(
-        r'(?<!Not )Attending:\s*(.+?)(?=Not Attending:|Meeting Notes?:|https://|$)',
+        r'(?<!Not )Attending:\s*(.+?)(?=Not Attending:|Meeting Notes?:?|https://|$)',
         text, re.DOTALL | re.IGNORECASE
     )
     if a_block:
@@ -323,7 +343,7 @@ def parse_agenda_text(text, filename=''):
                 attending.append(c)
 
     na_block = re.search(
-        r'Not Attending:\s*(.+?)(?=Meeting Notes?:|https://|$)',
+        r'Not Attending:\s*(.+?)(?=Meeting Notes?:?|https://|$)',
         text, re.DOTALL | re.IGNORECASE
     )
     if na_block:

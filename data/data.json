@@ -139,6 +139,11 @@
       "manualRoles": []
     },
     {
+      "name": "Colin S. Campbell",
+      "active": true,
+      "manualRoles": []
+    },
+    {
       "name": "Daniel J. Wallace",
       "active": true,
       "manualRoles": []
@@ -244,6 +249,11 @@
       "manualRoles": []
     },
     {
+      "name": "Pavan Kumar Tatikonda",
+      "active": true,
+      "manualRoles": []
+    },
+    {
       "name": "Renate S. Devin",
       "active": true,
       "manualRoles": []
@@ -251,6 +261,11 @@
     {
       "name": "Sarah Lundrigan",
       "active": false,
+      "manualRoles": []
+    },
+    {
+      "name": "Sandra Gutierrez",
+      "active": true,
       "manualRoles": []
     },
     {

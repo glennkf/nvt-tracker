@@ -297,6 +297,11 @@
       "name": "(Former Member)",
       "active": false,
       "manualRoles": []
+    },
+    {
+      "name": "Gergana Dobrinova",
+      "active": true,
+      "manualRoles": []
     }
   ],
   "meetings": [
@@ -2644,6 +2649,99 @@
         {
           "role": "Table Topics Speaker",
           "member": "Helen E. Long"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-07",
+      "title": "Printed Agenda 10-07-2026.pdf",
+      "pdfModifiedTime": "2026-10-10T17:05:11.703Z",
+      "attending": [],
+      "notAttending": [],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Helen E. Long"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Mary Ahlfeld"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Michele O'Connor"
+        },
+        {
+          "role": "Timer",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Speaker",
+          "member": "MaryAnne Grayken"
+        },
+        {
+          "role": "Speaker",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Mark R. Rinker"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Gergana Dobrinova"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Pavan Kumar Tatikonda"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Helen E. Long"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Jennifer McGhee"
         }
       ]
     }

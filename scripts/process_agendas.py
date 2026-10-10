@@ -184,6 +184,26 @@ def parse_agenda_text(text, filename=''):
     if dm:
         date = f"{dm.group(3)}-{MONTHS[dm.group(1).lower()]}-{dm.group(2).zfill(2)}"
 
+    # Fallback 1: first "Month D, YYYY" anywhere in the top of the document
+    if not date:
+        dm = re.search(
+            r'(January|February|March|April|May|June|July|August|'
+            r'September|October|November|December)\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})',
+            text[:1500], re.IGNORECASE
+        )
+        if dm:
+            date = f"{dm.group(3)}-{MONTHS[dm.group(1).lower()]}-{dm.group(2).zfill(2)}"
+            print(f'  Date taken from page header text: {date}')
+
+    # Fallback 2: numeric date in the filename, e.g. "Printed Agenda 10-7-2026.pdf"
+    if not date:
+        fm = re.search(r'(\d{1,2})[-_.](\d{1,2})[-_.](\d{4})', filename)
+        if fm:
+            mo, dy, yr = int(fm.group(1)), int(fm.group(2)), fm.group(3)
+            if 1 <= mo <= 12 and 1 <= dy <= 31:
+                date = f"{yr}-{mo:02d}-{dy:02d}"
+                print(f'  Date taken from filename: {date}')
+
     # Parse line by line - handles both "TIME ROLE MEMBER" and split lines
     lines = [l.strip() for l in text.split('\n') if l.strip()]
     roles = []
@@ -302,6 +322,8 @@ def parse_agenda_text(text, filename=''):
         if tt_m:
             # Line-wrap within the list is not a delimiter - rejoin with a space, not a comma
             joined = re.sub(r'\s*\n\s*', ' ', tt_m.group(1)).strip()
+            # Label sometimes repeats ("Table Topic Speakers: Table Topic Speakers: ...")
+            joined = re.sub(r'^(?:Table Topics? Speakers?:\s*)+', '', joined, flags=re.IGNORECASE)
             for name in joined.split(','):
                 mc = clean_name(name.strip())
                 if mc:
@@ -396,13 +418,71 @@ def read_pdf_text(service, file_id):
         _, done = downloader.next_chunk()
     fh.seek(0)
 
-    # Extract text using pdfplumber
-    text = ""
     with pdfplumber.open(fh) as pdf:
-        for page in pdf.pages:
-            page_text = page.extract_text() or ""
-            text += page_text + "\n"
-    return text
+        return pdf_to_text(pdf)
+
+def page_to_text(page):
+    """Rebuild agenda rows by column position so wrapped member names stay
+    on the same line as their role (e.g. 'Toastmaster Maureen DeRoma').
+    Falls back to plain extract_text() if the layout isn't recognised."""
+    plain = page.extract_text() or ""
+    try:
+        words = page.extract_words()
+        anchors = [w for w in words if re.fullmatch(r'\d{1,2}:\d{2}[AP]M', w['text']) and w['x0'] < 70]
+        mem_hdr = [w for w in words if w['text'] == 'Member' and w['x0'] > 400]
+        if not anchors or not mem_hdr:
+            return plain
+        mx = mem_hdr[0]['x0'] - 5
+        anchors.sort(key=lambda w: w['top'])
+        # cutoff where free text begins (meeting notes / attending / footer)
+        cut = page.height
+        for idx, w in enumerate(words):
+            nxt = words[idx + 1]['text'] if idx + 1 < len(words) else ''
+            if w['top'] > anchors[0]['top'] and (
+                (w['text'].upper() == 'MEETING' and nxt.upper().startswith('NOTES')) or
+                w['text'] in ('Attending:', 'Not') or w['text'].startswith('https://')):
+                cut = min(cut, w['top'] - 1)
+        head = page.crop((0, 0, page.width, max(anchors[0]['top'] - 2, 1))).extract_text() or ''
+        out = [head]
+        for k, a in enumerate(anchors):
+            top = a['top'] - 2
+            bot = (anchors[k + 1]['top'] - 2) if k + 1 < len(anchors) else cut
+            left = [w for w in words if top <= w['top'] < bot and w['x0'] < mx]
+            right = [w for w in words if top <= w['top'] < bot and w['x0'] >= mx]
+            def to_lines(ws):
+                ws = sorted(ws, key=lambda w: (round(w['top']), w['x0']))
+                lines, cur, ct = [], [], None
+                for w in ws:
+                    if ct is None or abs(w['top'] - ct) > 3:
+                        if cur: lines.append(' '.join(cur))
+                        cur, ct = [w['text']], w['top']
+                    else:
+                        cur.append(w['text'])
+                if cur: lines.append(' '.join(cur))
+                return lines
+            ll, rl = to_lines(left), ' '.join(to_lines(right))
+            if not ll:
+                continue
+            out.append((ll[0] + ' ' + rl).strip())
+            out.extend(ll[1:])
+        if cut < page.height:
+            tail = page.crop((0, cut, page.width, page.height)).extract_text() or ''
+            out.append(tail)
+        return '\n'.join(out)
+    except Exception as e:
+        print(f'  (column extraction failed: {e}; using plain text)')
+        return plain
+
+def pdf_to_text(pdf, filename=''):
+    plain = ''.join((p.extract_text() or '') + '\n' for p in pdf.pages)
+    cols = ''.join(page_to_text(p) + '\n' for p in pdf.pages)
+    try:
+        n_plain = len(parse_agenda_text(plain, filename)['roles'])
+        n_cols = len(parse_agenda_text(cols, filename)['roles'])
+    except Exception:
+        return plain
+    # Use column-aware text only when it finds at least as many roles
+    return cols if n_cols >= n_plain else plain
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────
 def main():

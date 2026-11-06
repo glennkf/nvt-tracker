@@ -302,6 +302,41 @@
       "name": "Gergana Dobrinova",
       "active": true,
       "manualRoles": []
+    },
+    {
+      "name": "LD2 Will be arriving closer to 7pm.",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "LD2 As your SAA for both meetings in November",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "both of which are in meeting rooms on the 1st floor rather than our usual meeting room",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "please be advised that tue to our relocation",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "there is no guarantee for online access. Tonight",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "11/4",
+      "active": true,
+      "manualRoles": []
+    },
+    {
+      "name": "we are in Room #133.",
+      "active": true,
+      "manualRoles": []
     }
   ],
   "meetings": [
@@ -2742,6 +2777,216 @@
         {
           "role": "Table Topics Speaker",
           "member": "Jennifer McGhee"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "title": "Printed Agenda 10-21-2026.pdf",
+      "pdfModifiedTime": "2026-11-06T22:19:21.493Z",
+      "attending": [],
+      "notAttending": [],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Michele O'Connor"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Timer",
+          "member": "Unkinou Her"
+        },
+        {
+          "role": "Speaker",
+          "member": "Jennifer McGhee"
+        },
+        {
+          "role": "Speaker",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Speaker",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Helen E. Long"
+        },
+        {
+          "role": "Evaluator",
+          "member": "MaryAnne Grayken"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Helen E. Long"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Mary Ahlfeld"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "LD2 Will be arriving closer to 7pm."
+        }
+      ]
+    },
+    {
+      "date": "2026-11-04",
+      "title": "Printed Agenda 11-04-2026.pdf",
+      "pdfModifiedTime": "2026-11-06T22:17:49.274Z",
+      "attending": [],
+      "notAttending": [],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Sandra Gutierrez"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Karen Morway-Adams"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Timer",
+          "member": "Michele O'Connor"
+        },
+        {
+          "role": "Speaker",
+          "member": "Margaret O'Connor"
+        },
+        {
+          "role": "Speaker",
+          "member": "Mary Ahlfeld"
+        },
+        {
+          "role": "Speaker",
+          "member": "MaryAnne Grayken"
+        },
+        {
+          "role": "Speaker",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Glenn Fernandes"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Lisa M. Axios"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Maureen DeRoma"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Mary Ahlfeld"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Sandra Gutierrez"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Amanda Stanton"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Pavan Kumar Tatikonda"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "Angela Nuss"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "LD2 As your SAA for both meetings in November"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "both of which are in meeting rooms on the 1st floor rather than our usual meeting room"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "please be advised that tue to our relocation"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "there is no guarantee for online access. Tonight"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "11/4"
+        },
+        {
+          "role": "Table Topics Speaker",
+          "member": "we are in Room #133."
         }
       ]
     }

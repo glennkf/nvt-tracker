@@ -1,84 +1,6 @@
 {
-  "lastUpdated": "2026-09-04",
+  "lastUpdated": "2026-11-07",
   "members": [
-    {
-      "name": "Renate Devin",
-      "paths": [
-        {
-          "pathName": "Presentation Mastery",
-          "levels": {
-            "Level 1": {
-              "completed": 1,
-              "total": 5,
-              "approved": false
-            },
-            "Level 2": {
-              "completed": 0,
-              "total": 4,
-              "approved": false
-            },
-            "Level 3": {
-              "completed": 0,
-              "total": 4,
-              "approved": false
-            },
-            "Level 4": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Level 5": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Path Completion": {
-              "completed": 0,
-              "total": 1
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Christopher Dixon",
-      "paths": [
-        {
-          "pathName": "Presentation Mastery",
-          "levels": {
-            "Level 1": {
-              "completed": 4,
-              "total": 5,
-              "approved": true
-            },
-            "Level 2": {
-              "completed": 3,
-              "total": 4,
-              "approved": true
-            },
-            "Level 3": {
-              "completed": 1,
-              "total": 4,
-              "approved": false
-            },
-            "Level 4": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Level 5": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Path Completion": {
-              "completed": 0,
-              "total": 1
-            }
-          }
-        }
-      ]
-    },
     {
       "name": "Jennifer McGhee",
       "paths": [
@@ -86,7 +8,7 @@
           "pathName": "Motivational Strategies",
           "levels": {
             "Level 1": {
-              "completed": 0,
+              "completed": 1,
               "total": 5,
               "approved": false
             },
@@ -140,7 +62,7 @@
               "approved": true
             },
             "Level 5": {
-              "completed": 0,
+              "completed": 1,
               "total": 3,
               "approved": false
             },
@@ -401,45 +323,6 @@
       ]
     },
     {
-      "name": "Helen Long",
-      "paths": [
-        {
-          "pathName": "Motivational Strategies",
-          "levels": {
-            "Level 1": {
-              "completed": 4,
-              "total": 5,
-              "approved": true
-            },
-            "Level 2": {
-              "completed": 0,
-              "total": 4,
-              "approved": false
-            },
-            "Level 3": {
-              "completed": 0,
-              "total": 4,
-              "approved": false
-            },
-            "Level 4": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Level 5": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Path Completion": {
-              "completed": 0,
-              "total": 1
-            }
-          }
-        }
-      ]
-    },
-    {
       "name": "Stefano McGhee",
       "paths": [
         {
@@ -544,7 +427,7 @@
               "approved": false
             },
             "Path Completion": {
-              "completed": 0,
+              "completed": 1,
               "total": 1
             }
           }
@@ -719,7 +602,7 @@
               "approved": true
             },
             "Level 5": {
-              "completed": 0,
+              "completed": 1,
               "total": 2,
               "approved": false
             },
@@ -865,9 +748,9 @@
               "approved": true
             },
             "Level 5": {
-              "completed": 1,
+              "completed": 3,
               "total": 3,
-              "approved": false
+              "approved": true
             },
             "Path Completion": {
               "completed": 0,
@@ -991,7 +874,7 @@
               "approved": true
             },
             "Level 2": {
-              "completed": 1,
+              "completed": 2,
               "total": 4,
               "approved": false
             },
@@ -1126,57 +1009,18 @@
       ]
     },
     {
-      "name": "Chris Walsh",
-      "paths": [
-        {
-          "pathName": "Motivational Strategies",
-          "levels": {
-            "Level 1": {
-              "completed": 1,
-              "total": 5,
-              "approved": false
-            },
-            "Level 2": {
-              "completed": 0,
-              "total": 4,
-              "approved": false
-            },
-            "Level 3": {
-              "completed": 0,
-              "total": 4,
-              "approved": false
-            },
-            "Level 4": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Level 5": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Path Completion": {
-              "completed": 0,
-              "total": 1
-            }
-          }
-        }
-      ]
-    },
-    {
       "name": "Amanda Stanton",
       "paths": [
         {
           "pathName": "Presentation Mastery",
           "levels": {
             "Level 1": {
-              "completed": 2,
+              "completed": 5,
               "total": 5,
-              "approved": false
+              "approved": true
             },
             "Level 2": {
-              "completed": 0,
+              "completed": 1,
               "total": 4,
               "approved": false
             },
@@ -1321,163 +1165,7 @@
       ]
     },
     {
-      "name": "Allison Pelton",
-      "paths": [
-        {
-          "pathName": "Presentation Mastery",
-          "levels": {
-            "Level 1": {
-              "completed": 1,
-              "total": 5,
-              "approved": false
-            },
-            "Level 2": {
-              "completed": 0,
-              "total": 4,
-              "approved": false
-            },
-            "Level 3": {
-              "completed": 0,
-              "total": 4,
-              "approved": false
-            },
-            "Level 4": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Level 5": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Path Completion": {
-              "completed": 0,
-              "total": 1
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Lyla Bakhit",
-      "paths": [
-        {
-          "pathName": "Presentation Mastery",
-          "levels": {
-            "Level 1": {
-              "completed": 0,
-              "total": 5,
-              "approved": false
-            },
-            "Level 2": {
-              "completed": 0,
-              "total": 4,
-              "approved": false
-            },
-            "Level 3": {
-              "completed": 0,
-              "total": 4,
-              "approved": false
-            },
-            "Level 4": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Level 5": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Path Completion": {
-              "completed": 0,
-              "total": 1
-            }
-          }
-        }
-      ]
-    },
-    {
       "name": "Michael Carlton",
-      "paths": [
-        {
-          "pathName": "Presentation Mastery",
-          "levels": {
-            "Level 1": {
-              "completed": 0,
-              "total": 5,
-              "approved": false
-            },
-            "Level 2": {
-              "completed": 0,
-              "total": 4,
-              "approved": false
-            },
-            "Level 3": {
-              "completed": 0,
-              "total": 4,
-              "approved": false
-            },
-            "Level 4": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Level 5": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Path Completion": {
-              "completed": 0,
-              "total": 1
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Slande Cheridor",
-      "paths": [
-        {
-          "pathName": "Persuasive Influence",
-          "levels": {
-            "Level 1": {
-              "completed": 0,
-              "total": 5,
-              "approved": false
-            },
-            "Level 2": {
-              "completed": 0,
-              "total": 4,
-              "approved": false
-            },
-            "Level 3": {
-              "completed": 0,
-              "total": 4,
-              "approved": false
-            },
-            "Level 4": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Level 5": {
-              "completed": 0,
-              "total": 3,
-              "approved": false
-            },
-            "Path Completion": {
-              "completed": 0,
-              "total": 1
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Gregory Dzialo",
       "paths": [
         {
           "pathName": "Presentation Mastery",
@@ -1592,6 +1280,443 @@
           }
         }
       ]
+    },
+    {
+      "name": "MaryAnne Grayken",
+      "paths": [
+        {
+          "pathName": "Presentation Mastery",
+          "levels": {
+            "Level 1": {
+              "completed": 2,
+              "total": 5,
+              "approved": false
+            },
+            "Level 2": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 3": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 4": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Level 5": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Path Completion": {
+              "completed": 0,
+              "total": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pavan Kumar Tatikonda",
+      "paths": [
+        {
+          "pathName": "Presentation Mastery",
+          "levels": {
+            "Level 1": {
+              "completed": 0,
+              "total": 5,
+              "approved": false
+            },
+            "Level 2": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 3": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 4": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Level 5": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Path Completion": {
+              "completed": 0,
+              "total": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sandra Gutierrez",
+      "paths": [
+        {
+          "pathName": "Dynamic Leadership",
+          "levels": {
+            "Level 1": {
+              "completed": 0,
+              "total": 5,
+              "approved": false
+            },
+            "Level 2": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 3": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 4": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Level 5": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Path Completion": {
+              "completed": 0,
+              "total": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Renate Devin",
+      "paths": [
+        {
+          "pathName": "Presentation Mastery",
+          "levels": {
+            "Level 1": {
+              "completed": 1,
+              "total": 5,
+              "approved": false
+            },
+            "Level 2": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 3": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 4": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Level 5": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Path Completion": {
+              "completed": 0,
+              "total": 1
+            }
+          }
+        }
+      ],
+      "asOf": "2026-09-04"
+    },
+    {
+      "name": "Christopher Dixon",
+      "paths": [
+        {
+          "pathName": "Presentation Mastery",
+          "levels": {
+            "Level 1": {
+              "completed": 4,
+              "total": 5,
+              "approved": true
+            },
+            "Level 2": {
+              "completed": 3,
+              "total": 4,
+              "approved": true
+            },
+            "Level 3": {
+              "completed": 1,
+              "total": 4,
+              "approved": false
+            },
+            "Level 4": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Level 5": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Path Completion": {
+              "completed": 0,
+              "total": 1
+            }
+          }
+        }
+      ],
+      "asOf": "2026-09-04"
+    },
+    {
+      "name": "Helen Long",
+      "paths": [
+        {
+          "pathName": "Motivational Strategies",
+          "levels": {
+            "Level 1": {
+              "completed": 4,
+              "total": 5,
+              "approved": true
+            },
+            "Level 2": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 3": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 4": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Level 5": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Path Completion": {
+              "completed": 0,
+              "total": 1
+            }
+          }
+        }
+      ],
+      "asOf": "2026-09-04"
+    },
+    {
+      "name": "Chris Walsh",
+      "paths": [
+        {
+          "pathName": "Motivational Strategies",
+          "levels": {
+            "Level 1": {
+              "completed": 1,
+              "total": 5,
+              "approved": false
+            },
+            "Level 2": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 3": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 4": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Level 5": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Path Completion": {
+              "completed": 0,
+              "total": 1
+            }
+          }
+        }
+      ],
+      "asOf": "2026-09-04"
+    },
+    {
+      "name": "Allison Pelton",
+      "paths": [
+        {
+          "pathName": "Presentation Mastery",
+          "levels": {
+            "Level 1": {
+              "completed": 1,
+              "total": 5,
+              "approved": false
+            },
+            "Level 2": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 3": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 4": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Level 5": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Path Completion": {
+              "completed": 0,
+              "total": 1
+            }
+          }
+        }
+      ],
+      "asOf": "2026-09-04"
+    },
+    {
+      "name": "Lyla Bakhit",
+      "paths": [
+        {
+          "pathName": "Presentation Mastery",
+          "levels": {
+            "Level 1": {
+              "completed": 0,
+              "total": 5,
+              "approved": false
+            },
+            "Level 2": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 3": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 4": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Level 5": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Path Completion": {
+              "completed": 0,
+              "total": 1
+            }
+          }
+        }
+      ],
+      "asOf": "2026-09-04"
+    },
+    {
+      "name": "Slande Cheridor",
+      "paths": [
+        {
+          "pathName": "Persuasive Influence",
+          "levels": {
+            "Level 1": {
+              "completed": 0,
+              "total": 5,
+              "approved": false
+            },
+            "Level 2": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 3": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 4": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Level 5": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Path Completion": {
+              "completed": 0,
+              "total": 1
+            }
+          }
+        }
+      ],
+      "asOf": "2026-09-04"
+    },
+    {
+      "name": "Gregory Dzialo",
+      "paths": [
+        {
+          "pathName": "Presentation Mastery",
+          "levels": {
+            "Level 1": {
+              "completed": 0,
+              "total": 5,
+              "approved": false
+            },
+            "Level 2": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 3": {
+              "completed": 0,
+              "total": 4,
+              "approved": false
+            },
+            "Level 4": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Level 5": {
+              "completed": 0,
+              "total": 3,
+              "approved": false
+            },
+            "Path Completion": {
+              "completed": 0,
+              "total": 1
+            }
+          }
+        }
+      ],
+      "asOf": "2026-09-04"
     }
   ]
 }

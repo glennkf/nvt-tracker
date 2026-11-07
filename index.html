@@ -1583,7 +1583,9 @@ function renderPathsTable() {
 function buildDCPForecast() {
   const goalTotals = { 1: 0, 2: 0, 3: 0, 4: 0 };
   (CURRENT_YEAR_ACHIEVEMENTS?.confirmedCompletions || []).forEach(c => {
-    if (goalTotals[c.level] !== undefined) goalTotals[c.level]++;
+    // Level 5 = Path Completion: counts in the "Level 4, Path Completion, or DTM" goal bucket
+    const bucket = (Number(c.level) === 5) ? 4 : c.level;
+    if (goalTotals[bucket] !== undefined) goalTotals[bucket]++;
   });
 
   const goals = [

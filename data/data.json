@@ -2588,7 +2588,9 @@
         },
         {
           "role": "Speaker",
-          "member": "Unkinou Her"
+          "member": "Unkinou Her",
+          "projectTitle": "Success Starts at Home",
+          "pathLevel": "PATHWAYS - Presentation Mastery: (L1) Writing a Speech with Purpose"
         },
         {
           "role": "Speaker",
@@ -2681,11 +2683,14 @@
         },
         {
           "role": "Speaker",
-          "member": "MaryAnne Grayken"
+          "member": "MaryAnne Grayken",
+          "projectTitle": "Love Letter for \"To All the Boys I've Loved Before Author Jenny Han"
         },
         {
           "role": "Speaker",
-          "member": "Amanda Stanton"
+          "member": "Amanda Stanton",
+          "projectTitle": "The Art of How a Room Feels",
+          "pathLevel": "PATHWAYS - Presentation Mastery: (L2) Effective Body Language"
         },
         {
           "role": "General Evaluator",
@@ -2774,7 +2779,9 @@
         },
         {
           "role": "Speaker",
-          "member": "Jennifer McGhee"
+          "member": "Jennifer McGhee",
+          "projectTitle": "Finding My Voice",
+          "pathLevel": "PATHWAYS - Motivational Strategies: (L1) Ice Breaker"
         },
         {
           "role": "Speaker",
@@ -2782,7 +2789,9 @@
         },
         {
           "role": "Speaker",
-          "member": "Angela Nuss"
+          "member": "Angela Nuss",
+          "projectTitle": "Relationships & Referral Partnerships",
+          "pathLevel": "PATHWAYS - Presentation Mastery: (L1) Evaluation and Feedback #1"
         },
         {
           "role": "General Evaluator",
@@ -2851,19 +2860,25 @@
         },
         {
           "role": "Speaker",
-          "member": "Margaret O'Connor"
+          "member": "Margaret O'Connor",
+          "projectTitle": "No Website? Bad. An Outdated Website? Worse.",
+          "pathLevel": "PATHWAYS - Innovative Planning: (L5) High Performance Leadership #1"
         },
         {
           "role": "Speaker",
-          "member": "Mary Ahlfeld"
+          "member": "Mary Ahlfeld",
+          "projectTitle": "The Communication Style of a Mom, Wife, Fitness Instructor, and Business Woman."
         },
         {
           "role": "Speaker",
-          "member": "MaryAnne Grayken"
+          "member": "MaryAnne Grayken",
+          "projectTitle": "War and Etna",
+          "pathLevel": "PATHWAYS - Presentation Mastery: (L1) Intro to Vocal Variety & Body Language"
         },
         {
           "role": "Speaker",
-          "member": "Amanda Stanton"
+          "member": "Amanda Stanton",
+          "projectTitle": "Feng Shui Your Office"
         },
         {
           "role": "General Evaluator",

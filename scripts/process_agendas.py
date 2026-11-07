@@ -69,6 +69,10 @@ CRED_FRAG = re.compile(
     r'^(DTM|ACB|MS\d*|VC\d*|LD\d*|SR\d*|Pathways\s+\w+|Pathways\s+Mentor|CC|CL)$',
     re.IGNORECASE
 )
+TRAIL_CRED = re.compile(
+    r'^(DTM|IPE|ACB|ACS|ACG|ALB|ALS|CC|CL|CTM|MS|PM\d|EH\d|DL\d|PI\d|TC\d|VC\d|LD\d|SR\d)$',
+    re.IGNORECASE
+)
 TIME_RE = re.compile(r'(\d{1,2}:\d{2}(?:AM|PM))', re.IGNORECASE)
 
 # ─── NAME UTILS ───────────────────────────────────────────────────────────────
@@ -77,6 +81,11 @@ def clean_name(raw):
     if 'open speaker' in raw.lower(): return None
     cleaned = CRED_RE.sub('', raw).strip().strip(',').strip()
     cleaned = re.sub(r'\s+', ' ', cleaned)
+    # Credentials with no comma before them (wrapped lines): "Daniel J. Wallace DTM", "Michele Chamberlain VC5"
+    toks = cleaned.split()
+    while len(toks) > 2 and TRAIL_CRED.match(toks[-1]):
+        toks.pop()
+    cleaned = ' '.join(toks)
     if not cleaned or len(cleaned) < 3: return None
     if CRED_FRAG.match(cleaned): return None
     # Remove "(guest)" markers
@@ -316,7 +325,7 @@ def parse_agenda_text(text, filename=''):
 
         # Table Topics Speakers: Name, Name, Name (may wrap across multiple lines)
         tt_m = re.search(
-            r'Table Topics? Speakers?:\s*(.+?)(?=Introductory Mentor:|Club Mentor:|Specialized Role:|$)',
+            r'Table Topics? Speakers?:\s*(.+?)(?=Introductory Mentor:|Club Mentor:|Specialized Role:|\n' + re.escape(AUTHOR_MARK.strip()) + r'|$)',
             notes, re.IGNORECASE | re.DOTALL
         )
         if tt_m:
@@ -326,8 +335,13 @@ def parse_agenda_text(text, filename=''):
             joined = re.sub(r'^(?:Table Topics? Speakers?:\s*)+', '', joined, flags=re.IGNORECASE)
             for name in joined.split(','):
                 mc = clean_name(name.strip())
-                if mc:
-                    roles.append({'role': normalize_role('Table Topics Speaker', from_notes=True), 'member': mc})
+                if not mc:
+                    continue
+                mc = re.sub(r'\s+[-–]\s+', '-', mc)   # "Karen Morway - Adams" -> "Karen Morway-Adams"
+                if not looks_like_person_name(mc):
+                    print(f'  Skipping non-name text in Table Topics list: {mc!r}')
+                    continue
+                roles.append({'role': normalize_role('Table Topics Speaker', from_notes=True), 'member': mc})
 
         # Introductory Mentor: Name
         im_m = re.search(r'Introductory Mentor:\s*(.+?)(?:\n|$)', notes, re.IGNORECASE)
@@ -421,6 +435,61 @@ def read_pdf_text(service, file_id):
     with pdfplumber.open(fh) as pdf:
         return pdf_to_text(pdf)
 
+AUTHOR_MARK = '@@ '
+
+_NAME_PARTICLES = {'de', 'da', 'del', 'van', 'von', 'der', 'la', 'le', 'di', 'bin', 'al', 'st.'}
+
+def looks_like_person_name(n):
+    """Safety net: a Table Topics entry must look like a person's name
+    (1 to 5 words, no digits, each word capitalised or a name particle)."""
+    toks = n.split()
+    if not 1 <= len(toks) <= 5:
+        return False
+    for t in toks:
+        if any(ch.isdigit() for ch in t):
+            return False
+        if t.lower() in _NAME_PARTICLES:
+            continue
+        if not re.match(r"^[A-Z][A-Za-z.'’\-]*$", t):
+            return False
+    return True
+
+def marked_text(page, y0):
+    """Text from y0 down, with bold lines (note author signatures in the
+    Meeting Notes area) prefixed by AUTHOR_MARK. Each note in FTH starts with
+    a bold author line, so this cleanly separates one note from the next."""
+    region = page.crop((0, y0, page.width, page.height))
+    words = region.extract_words(extra_attrs=['fontname', 'size'])
+    ws = sorted(words, key=lambda w: (round(w['top']), w['x0']))
+    lines, cur, ct = [], [], None
+    for w in ws:
+        if ct is None or abs(w['top'] - ct) > 3:
+            if cur: lines.append(cur)
+            cur, ct = [w], w['top']
+        else:
+            cur.append(w)
+    if cur: lines.append(cur)
+    out = []
+    for ln in lines:
+        txt = ' '.join(w['text'] for w in ln)
+        bold = all('bold' in w['fontname'].lower() for w in ln) and min(w['size'] for w in ln) >= 9.5
+        out.append((AUTHOR_MARK + txt) if bold else txt)
+    return '\n'.join(out)
+
+def plain_text_marked(page):
+    """Plain page text, but with the Meeting Notes area bold-marked."""
+    try:
+        ws = page.extract_words()
+        for idx, w in enumerate(ws):
+            nxt = ws[idx + 1]['text'] if idx + 1 < len(ws) else ''
+            if w['text'] == 'MEETING' and nxt.upper().startswith('NOTES'):
+                y = w['top'] - 1
+                head = page.crop((0, 0, page.width, max(y, 1))).extract_text() or ''
+                return head + '\n' + marked_text(page, y)
+    except Exception:
+        pass
+    return page.extract_text() or ''
+
 def page_to_text(page):
     """Rebuild agenda rows by column position so wrapped member names stay
     on the same line as their role (e.g. 'Toastmaster Maureen DeRoma').
@@ -431,7 +500,7 @@ def page_to_text(page):
         anchors = [w for w in words if re.fullmatch(r'\d{1,2}:\d{2}[AP]M', w['text']) and w['x0'] < 70]
         mem_hdr = [w for w in words if w['text'] == 'Member' and w['x0'] > 400]
         if not anchors or not mem_hdr:
-            return plain
+            return plain_text_marked(page)
         mx = mem_hdr[0]['x0'] - 5
         anchors.sort(key=lambda w: w['top'])
         # cutoff where free text begins (meeting notes / attending / footer)
@@ -466,15 +535,14 @@ def page_to_text(page):
             out.append((ll[0] + ' ' + rl).strip())
             out.extend(ll[1:])
         if cut < page.height:
-            tail = page.crop((0, cut, page.width, page.height)).extract_text() or ''
-            out.append(tail)
+            out.append(marked_text(page, cut))
         return '\n'.join(out)
     except Exception as e:
         print(f'  (column extraction failed: {e}; using plain text)')
         return plain
 
 def pdf_to_text(pdf, filename=''):
-    plain = ''.join((p.extract_text() or '') + '\n' for p in pdf.pages)
+    plain = ''.join(plain_text_marked(p) + '\n' for p in pdf.pages)
     cols = ''.join(page_to_text(p) + '\n' for p in pdf.pages)
     try:
         n_plain = len(parse_agenda_text(plain, filename)['roles'])

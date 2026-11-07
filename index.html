@@ -1632,6 +1632,7 @@ function buildDCPForecast() {
   }
   const closeItems = [];
   PATHS_DATA.members.forEach(m => {
+    if (m.asOf) return;  // carried-forward record (not in the latest Basecamp pull): leave out of "close to completing"
     m.paths.forEach(p => {
       const status = getPathStatus(p);
       if (status.cls === 'close') {

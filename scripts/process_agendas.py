@@ -267,6 +267,10 @@ def parse_agenda_text(text, filename=''):
                 date = f"{yr}-{mo:02d}-{dy:02d}"
                 print(f'  Date taken from filename: {date}')
 
+    # Title: always a readable date ("November 4, 2026"), never the filename
+    if date and not re.search(r'[A-Za-z]{3,}\s+\d{1,2},?\s+\d{4}', title):
+        title = pretty_date(date)
+
     # Parse line by line - handles both "TIME ROLE MEMBER" and split lines
     lines = [l.strip() for l in text.split('\n') if l.strip()]
     roles = []
@@ -628,6 +632,21 @@ def pdf_to_text(pdf, filename=''):
     # Use column-aware text only when it finds at least as many roles
     return cols if n_cols >= n_plain else plain
 
+def pretty_date(iso):
+    y, m, d = iso.split('-')
+    names = {v: k.capitalize() for k, v in MONTHS.items()}
+    return f"{names[m]} {int(d)}, {y}"
+
+def fix_filename_title(data, parsed):
+    """Meetings stored with the PDF filename as their title get a readable date title.
+    Only touches titles that look like filenames; custom titles are left alone."""
+    meeting = next((m for m in data['meetings'] if m['date'] == parsed['date']), None)
+    if meeting and re.search(r'\.pdf\s*$|^Printed Agenda', meeting.get('title', ''), re.IGNORECASE):
+        meeting['title'] = pretty_date(parsed['date'])
+        print(f'  + Title fixed: {meeting["title"]}')
+        return 1
+    return 0
+
 def fill_speech_details(data, parsed, members):
     """For a meeting already in data.json, add projectTitle / pathLevel to Speaker
     roles that have neither. Never overwrites anything already stored, so manual
@@ -693,11 +712,11 @@ def main():
             # If no stored modifiedTime (legacy meetings), skip as normal to protect manual fixes
             if not stored_modified:
                 print(f'  {parsed["date"]} already in tracker — skipping')
-                details_filled += fill_speech_details(data, parsed, members)
+                details_filled += fill_speech_details(data, parsed, members) + fix_filename_title(data, parsed)
                 continue
             elif stored_modified >= current_modified:
                 print(f'  {parsed["date"]} already in tracker and PDF unchanged — skipping')
-                details_filled += fill_speech_details(data, parsed, members)
+                details_filled += fill_speech_details(data, parsed, members) + fix_filename_title(data, parsed)
                 continue
             else:
                 print(f'  {parsed["date"]} PDF was modified — reprocessing')

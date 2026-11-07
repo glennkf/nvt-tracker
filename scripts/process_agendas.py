@@ -92,6 +92,60 @@ def clean_name(raw):
     if '(guest)' in cleaned.lower(): return None
     return cleaned
 
+PROJECT_LINE_RE = re.compile(
+    r'^(?P<path>[A-Za-z][A-Za-z\' &]+?)\s+[—–-]\s+Level\s+(?P<lvl>\d)\s*:\s*(?P<proj>.+?)'
+    r'\s*(?:\(\s*\d+\s*[–-]\s*\d+\s*min\s*\))?\s*$'
+)
+_SPEAKER_ROW_RE = re.compile(r'^\d{1,2}:\d{2}[AP]M\s+Speaker\b(.*)$', re.IGNORECASE)
+_ANY_TIME_ROW_RE = re.compile(r'^\d{1,2}:\d{2}[AP]M\b')
+
+def extract_speeches(text):
+    """For each 'TIME Speaker <member>' row, collect the speech title and the
+    Pathways project line that follow it, until the next time row.
+    Returns [{'member', 'projectTitle', 'pathLevel'}] in agenda order.
+    pathLevel uses the same format as the hand-entered history:
+    'PATHWAYS - <Path>: (L<n>) <Project>'."""
+    lines = [l.strip().lstrip('@ ').strip() if l.startswith('@@') else l.strip()
+             for l in text.split('\n') if l.strip()]
+    out = []
+    i = 0
+    while i < len(lines):
+        m = _SPEAKER_ROW_RE.match(lines[i])
+        if not m:
+            i += 1
+            continue
+        member_raw = m.group(1).strip()
+        member = clean_name(member_raw) if member_raw else None
+        block = []
+        j = i + 1
+        while j < len(lines) and not _ANY_TIME_ROW_RE.match(lines[j]) \
+                and not re.match(r'^(MEETING NOTES|Attending:|Not Attending:|https://)', lines[j], re.I):
+            block.append(lines[j])
+            j += 1
+        title_parts, path_level, past_eval = [], None, False
+        for b in block:
+            low = b.lower()
+            if low.startswith('evaluated by:'):
+                past_eval = True
+                continue
+            if (low.startswith('project guide') or low.startswith('purpose of this speech')
+                    or low.startswith('path / project')):
+                break          # guide links / purpose text, or the older agenda template
+            pm = PROJECT_LINE_RE.match(b)
+            if pm:
+                proj = re.sub(r'\s+', ' ', pm.group('proj')).strip()
+                path_level = f"PATHWAYS - {pm.group('path').strip()}: (L{pm.group('lvl')}) {proj}"
+                continue
+            if low.startswith('custom speech'):
+                continue
+            if not past_eval:
+                title_parts.append(b)
+        title = ' '.join(title_parts).strip()
+        title = title.strip('"').strip('“”').strip() or None
+        out.append({'member': member, 'projectTitle': title, 'pathLevel': path_level})
+        i = j
+    return out
+
 def normalize_role(r, from_notes=False):
     if not r: return None
     r = r.replace('\\', '').strip()
@@ -364,6 +418,28 @@ def parse_agenda_text(text, filename=''):
             if mc:
                 roles.append({'role': 'Specialized Role', 'member': mc})
 
+    # Attach speech title + Pathways project to each Speaker role (FTH4 layout)
+    try:
+        speeches = extract_speeches(text)
+        speaker_roles = [r for r in roles if r['role'] == 'Speaker']
+        used = set()
+        for r in speaker_roles:
+            for k, sp in enumerate(speeches):
+                if k in used:
+                    continue
+                if sp['member'] and sp['member'].lower() == r['member'].lower():
+                    used.add(k)
+                    if sp['projectTitle']: r['projectTitle'] = sp['projectTitle']
+                    if sp['pathLevel']: r['pathLevel'] = sp['pathLevel']
+                    break
+        # Fallback: same count of speaker rows on both sides -> pair by order
+        if len(speaker_roles) == len(speeches) and not used:
+            for r, sp in zip(speaker_roles, speeches):
+                if sp['projectTitle']: r['projectTitle'] = sp['projectTitle']
+                if sp['pathLevel']: r['pathLevel'] = sp['pathLevel']
+    except Exception as e:
+        print(f'  (could not read speech details: {e})')
+
     # Parse attending / not attending
     attending = []
     not_attending = []
@@ -552,6 +628,28 @@ def pdf_to_text(pdf, filename=''):
     # Use column-aware text only when it finds at least as many roles
     return cols if n_cols >= n_plain else plain
 
+def fill_speech_details(data, parsed, members):
+    """For a meeting already in data.json, add projectTitle / pathLevel to Speaker
+    roles that have neither. Never overwrites anything already stored, so manual
+    edits are safe. Returns the number of roles updated."""
+    meeting = next((m for m in data['meetings'] if m['date'] == parsed['date']), None)
+    if not meeting:
+        return 0
+    filled = 0
+    for pr in parsed['roles']:
+        if pr['role'] != 'Speaker' or not (pr.get('projectTitle') or pr.get('pathLevel')):
+            continue
+        who = find_member(pr['member'], members) or pr['member']
+        for sr in meeting['roles']:
+            if sr['role'] == 'Speaker' and sr['member'] == who \
+                    and not sr.get('projectTitle') and not sr.get('pathLevel'):
+                if pr.get('projectTitle'): sr['projectTitle'] = pr['projectTitle']
+                if pr.get('pathLevel'): sr['pathLevel'] = pr['pathLevel']
+                filled += 1
+                print(f'  + Speech details added: {who} ({parsed["date"]})')
+                break
+    return filled
+
 # ─── MAIN ─────────────────────────────────────────────────────────────────────
 def main():
     print('Loading data.json...')
@@ -571,6 +669,7 @@ def main():
 
     new_meetings = 0
     new_members_added = []
+    details_filled = 0
 
     for pdf in pdfs:
         print(f'\nProcessing: {pdf["name"]}')
@@ -594,9 +693,11 @@ def main():
             # If no stored modifiedTime (legacy meetings), skip as normal to protect manual fixes
             if not stored_modified:
                 print(f'  {parsed["date"]} already in tracker — skipping')
+                details_filled += fill_speech_details(data, parsed, members)
                 continue
             elif stored_modified >= current_modified:
                 print(f'  {parsed["date"]} already in tracker and PDF unchanged — skipping')
+                details_filled += fill_speech_details(data, parsed, members)
                 continue
             else:
                 print(f'  {parsed["date"]} PDF was modified — reprocessing')
@@ -637,7 +738,10 @@ def main():
                 matched = r['member']
                 new_members_added.append(r['member'])
                 print(f'  + New member added: {r["member"]}')
-            entry['roles'].append({'role': r['role'], 'member': matched})
+            new_role = {'role': r['role'], 'member': matched}
+            if r.get('projectTitle'): new_role['projectTitle'] = r['projectTitle']
+            if r.get('pathLevel'): new_role['pathLevel'] = r['pathLevel']
+            entry['roles'].append(new_role)
 
         data['meetings'].append(entry)
         existing_dates.add(parsed['date'])
@@ -647,7 +751,10 @@ def main():
     # Sort meetings by date
     data['meetings'].sort(key=lambda m: m['date'])
 
-    if new_meetings > 0 or new_members_added:
+    if details_filled:
+        print(f'\n  Filled speech details for {details_filled} existing speaker role(s)')
+
+    if new_meetings > 0 or new_members_added or details_filled:
         with open(DATA_PATH, 'w') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         print(f'\n✓ data.json updated:')

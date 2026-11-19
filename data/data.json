@@ -2942,6 +2942,53 @@
           "member": "Karen Morway-Adams"
         }
       ]
+    },
+    {
+      "date": "2026-11-18",
+      "title": "November 18, 2026",
+      "pdfModifiedTime": "2026-11-19T03:13:56.724Z",
+      "attending": [],
+      "notAttending": [],
+      "roles": [
+        {
+          "role": "Thought of the day",
+          "member": "Michele O'Connor"
+        },
+        {
+          "role": "Toastmaster",
+          "member": "Mary Ahlfeld"
+        },
+        {
+          "role": "Joke of the day",
+          "member": "Sandra Gutierrez"
+        },
+        {
+          "role": "Grammarian",
+          "member": "Colin S. Campbell"
+        },
+        {
+          "role": "Timer",
+          "member": "Daniel J. Wallace"
+        },
+        {
+          "role": "Speaker",
+          "member": "Glenn Fernandes",
+          "projectTitle": "In Front of the Curtain",
+          "pathLevel": "PATHWAYS - Persuasive Influence: (L1) Ice Breaker"
+        },
+        {
+          "role": "General Evaluator",
+          "member": "Lisa Walker"
+        },
+        {
+          "role": "Evaluator",
+          "member": "Michele Chamberlain"
+        },
+        {
+          "role": "Table Topics Master",
+          "member": "Maureen DeRoma"
+        }
+      ]
     }
   ]
 }
